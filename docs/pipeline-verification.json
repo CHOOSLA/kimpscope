@@ -1,0 +1,21 @@
+{
+  "metadata_before": 298,
+  "metadata_after": 298,
+  "idempotent_documents": true,
+  "cache_hit": true,
+  "own_document_included": true,
+  "item_scoped_ids": true,
+  "similarity_ids": [
+    "KRW-BTC"
+  ],
+  "mmr_ids": [
+    "KRW-BTC"
+  ],
+  "graph_nodes": [
+    "__start__",
+    "retrieve",
+    "generate",
+    "__end__"
+  ],
+  "elapsed_seconds": 12.29
+}
