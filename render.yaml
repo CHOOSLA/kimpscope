@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: ccw-kimpscope
+    name: kimpscope
     env: python
     region: singapore
     plan: free
