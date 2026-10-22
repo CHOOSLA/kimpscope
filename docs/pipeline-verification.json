@@ -1,15 +1,24 @@
 {
   "metadata_before": 298,
   "metadata_after": 298,
+  "metadata_repeated": 298,
   "idempotent_documents": true,
   "cache_hit": true,
   "own_document_included": true,
   "item_scoped_ids": true,
   "similarity_ids": [
-    "KRW-BTC"
+    "KRW-BTC",
+    "KRW-BTC:6d8bb533debd0348:1",
+    "KRW-BTC:6d8bb533debd0348:2",
+    "KRW-BTC:6d8bb533debd0348:0",
+    "KRW-BTC:6d8bb533debd0348:3"
   ],
   "mmr_ids": [
-    "KRW-BTC"
+    "KRW-BTC",
+    "KRW-BTC:6d8bb533debd0348:1",
+    "KRW-BTC:6d8bb533debd0348:2",
+    "KRW-BTC:6d8bb533debd0348:0",
+    "KRW-BTC:6d8bb533debd0348:3"
   ],
   "graph_nodes": [
     "__start__",
@@ -17,5 +26,5 @@
     "generate",
     "__end__"
   ],
-  "elapsed_seconds": 12.29
+  "elapsed_seconds": 11.33
 }

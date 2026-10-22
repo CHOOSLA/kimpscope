@@ -20,7 +20,16 @@ def retrieve_node(s):
     gathered=collect(s['item'],s['question']);index_documents(s['item'],gathered['documents'])
     return {'evidence':retrieve(s['item'],s['question'],s['k'],s['mode']),'cache_hit':gathered['cache_hit']}
 
+def requires_live_data(question):
+    # API documentation examples are never a source of live quotes or wallet status.
+    live = re.search(r'(지금|현재|오늘|실시간).*(가격|시세|출금|입금|입출금|거래.?가능)', question)
+    forecast = re.search(r'(내일|미래|앞으로|다음.?주).*(가격|시세|오르|올라|내리|하락|상승|수익)', question)
+    return bool(live or forecast)
+
+
 def generate_node(s):
+    if requires_live_data(s['question']):
+        return {'answer':'저장된 문서와 API 응답 예시로는 현재 가격이나 입출금 가능 여부를 확인할 수 없습니다. 현재 가격은 별도의 시세 화면에서, 입출금 상태는 거래소의 최신 안내에서 확인하세요. 미래 가격과 수익도 예측하지 않습니다.','citations':[],'status':'unsupported_live_query'}
     if not available():return {'answer':'생성 모델 API 키가 설정되지 않았습니다. 아래는 실제 의미 검색으로 찾은 문서이며, 생성 답변의 인용은 아닙니다. 서버 환경변수 OPENAI_API_KEY 설정 후 근거 기반 답변을 사용할 수 있습니다.','citations':[],'status':'missing_key'}
     context='\n\n'.join(f"[{i+1}] {e['source_type']} | {e['title']}\n{e['text']}" for i,e in enumerate(s['evidence']))
     answer=model().invoke([('system',GENERATE),('human',f"질문: {s['question']}\n선택 항목: {s['item']['name']}\n근거:\n{context}")]).content

@@ -1,50 +1,56 @@
 # KimpScope
 
-김치 프리미엄 비교에서 코인별 공지와 근거 확인으로 이어지는 **프론트엔드 전용 프로토타입**. Kimprun의 시세 비교 목적을 참고했으며 소스와 UI는 독립적으로 구현했다.
+국내외 코인 시세 비교와 공식 문서 기반 리서치를 연결하는 웹 MVP입니다. 현재 저장소는 **정적 프론트엔드 + Python FastAPI 백엔드**로 구성되어 있습니다. 이전 프론트엔드 전용 데모에서 확장된 상태입니다.
 
-## 실행
+## Windows 실행 (PowerShell 7 / Python 3.12)
 
-```sh
-python3 -m http.server 4173 --directory dist
+```powershell
+pwsh -File scripts/run.ps1 -Setup
+# 다음 실행부터
+pwsh -File scripts/run.ps1
 ```
 
-브라우저에서 http://localhost:4173 접속. 빌드나 서버 애플리케이션, API 키 불필요. HTML/CSS/JavaScript로 작성했다. 의존성 없이 실행하도록 이번 버전은 일반 CSS를 사용한다. Google Fonts가 차단되어도 시스템 글꼴로 표시된다.
+http://127.0.0.1:4173 에 접속합니다. 포트 변경은 `-Port 4174`, 종료는 Ctrl+C입니다. 가상환경 활성화나 PowerShell 실행 정책 변경은 필요하지 않습니다.
 
-## 구현
+macOS/Linux에서는 Python 가상환경 생성 및 requirements.txt 설치 후 `sh scripts/run.sh`로 실행할 수 있습니다.
 
-- 10개 코인 데모 시세, 3초 시뮬레이션, 일시정지/재개
-- 검색, 프리미엄 필터/정렬, 관심 코인 저장
-- 코인 상세·기간별 샘플 차트·환산 기준
-- 코인별 가상 공지 3건 및 원문 모달
-- 코인별 독립 대화 기록, 인용 문서 열기, 근거 없는 질문 답변 거절
-- 관심 코인과 대화 localStorage 저장, 모바일 대응
+## 모델 설정
 
-## 실제 연동이 아닌 부분
+`.env.example`을 `.env`로 복사하고 발급받은 키를 직접 설정하세요. 기존 `.env`는 덮어쓰지 마세요. 키를 Git에 올리지 않습니다.
 
-모든 가격/환율/등락률/차트/공지는 샘플이다. RAG UI의 답변은 규칙 기반이며 임베딩·검색·LLM 호출은 없다. 실시간 거래소 WebSocket, 로그인, 공용 채팅, 주문, 금융 거래 기능이 없다. 가상 문서는 실제 거래소 공지와 혼동하지 않도록 원문에 표시한다.
+- `OPENAI_API_KEY`: 선택한 API 제공자의 키
+- `OPENAI_BASE_URL`: 예제는 SSAFY GMS 주소입니다. 다른 제공자를 사용하면 해당 주소로 변경합니다.
+- `CHAT_MODEL`: 답변 생성 모델
+- `EMBED_MODEL`: 임베딩 모델 (기본 text-embedding-3-small)
 
-## PDF 요구사항 연결
+**현재 구현은 생성뿐 아니라 임베딩·벡터 질의에도 API 키가 필요합니다.** 키 없이 가능한 것은 시세, 메타데이터/원문 조회 및 규칙 기반 조건 탐색입니다. 화면에서 데이터 색인을 실행한 후 질문하세요. 모델 호출에는 제공자의 사용량이 발생할 수 있습니다.
 
-| 항목 | 프로토타입 | 실제 구현에 남은 작업 |
-|---|---|---|
-| F2001–2002 | 10개 코인 fixture | 100개 이상 메타데이터 수집, 임베딩·멱등 색인 |
-| F2003–2005 | 코인별 가상 문서 | 키워드·문서 선택 프롬프트, 원문 수집, 별도 문서 컬렉션·청킹 |
-| F2006–2007 | 선택 코인 범위의 규칙 기반 데모 | 메타데이터 항상 포함, 유사도 검색·중복 제거, LangGraph retrieve/generate |
-| F2008 | 답변별 번호 인용·실제 표시 문서 모달 | 생성 답변 인용 검증, 실제 원문 URL/페이지 |
-| F2009 | 코인 선택·독립 대화 기록 | 서버 사용자별 저장·인증 |
-| F2010 | 전송 전 확인 사항 데모 | 실제 근거 기반 도메인 기능 |
-| F2011 | 키워드·수치 필터 | 자연어 조건 구조화·실제 필터링·항목 이동 |
-| F2012 | 진행·빈 결과·근거 없음·데모 안내 | 색인/키/모델/API 오류 처리 |
-| F2013 | 커스텀 웹 프론트엔드 | Python RAG 서버 연동 |
-| F2014–2016 | 미구현 | 검색 방식 비교·질의 평가·다종 문서 |
+## 현재 구조와 범위
 
-이 UI만으로 과제 요구사항 전체를 충족하지 않는다.
+- `dist/`: 시세표, 검색·필터, 관심 코인, 코인별 대화·인용 문서 UI
+- `backend/main.py`: API와 정적 화면을 같은 포트에서 제공
+- `backend/market.py`: 업비트·Binance REST 시세 조회, 5초 캐시 및 요청 직렬화. WebSocket 스트리밍은 아직 아닙니다.
+- `backend/store.py`: Chroma의 항목/문서 컬렉션, OpenAI 호환 임베딩, 코인 범위 검색 및 MMR 선택
+- `backend/pipeline.py`: LangGraph retrieve → generate, 번호 인용 검사
+- `backend/collection.py`: 저장된 공식 문서 팩에서 후보 선택, 질문 캐시 및 문서 버전 해시
+- `data/markets.json`, `data/documents.json`: 수집 시점 스냅샷. 최신 공지 실시간 수집기가 아닙니다.
 
-## 권장 연동 경계
+국내외 환산에는 업비트 USDT/KRW 체결가를 사용하며 USD 환율과 다릅니다. 과거 차트는 업비트 캔들 종가이며 김치 프리미엄 이력이 아닙니다. 데이터 이용 조건과 출처는 [SOURCES.md](docs/SOURCES.md)를 확인하세요.
 
-1. Market adapter: 정규화 이벤트 `{symbol, exchange, quote, price, exchangeTimestamp, receivedAt, sequence}`. 환율과 시세의 기준 시각을 함께 관리. 오래된 시세는 stale 표시하고 프리미엄 계산 제외.
-2. Documents adapter: `{id, symbol, title, sourceUrl, publishedAt, fetchedAt, revision, body}`. 원문/개정 이력과 코인 범위 보존.
-3. Research adapter: 입력 `{symbol, question, conversationId}` → 응답 `{answer, citations:[{documentId, chunkId}], status}`. 서버에서 검색 범위 및 인용 근거 검증. 비밀 키는 서버에만 보관.
-4. 현 `answer()` / `docs()` / 시뮬레이션 타이머를 위 adapter로 교체. 코인 전환 중 응답이 도착해도 원래 코인의 대화에 저장한다.
+## 검증
 
-백엔드 포트폴리오 실험 후보: 거래소 이벤트 순서 역전·중복 처리, 팬아웃과 느린 클라이언트, 오래된 데이터 감지, 공지 개정에 따른 재색인·캐시 무효화. 현재 구현 완료 사실로 주장하지 않는다.
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+node --check dist/app.js
+node --check dist/integration.js
+```
+
+기본 테스트는 외부 생성 모델을 호출하지 않습니다. `python -m scripts.verify_pipeline`과 `python -m scripts.evaluate`는 별도의 모델 설정과 색인이 필요하며 외부 API를 호출합니다. 기존 `docs/pipeline-verification.json`은 저장된 과거 결과이지 현재 PC의 검증 결과가 아닙니다.
+
+## 배포와 남은 작업
+
+`.openai/hosting.json`은 프론트 정적 파일만 배포하는 설정입니다. 이 설정만으로 Python 백엔드가 배포되지는 않습니다. 현재 전체 기능 검증은 위 FastAPI 실행 방식으로 진행합니다.
+
+PDF의 전체 요구사항 충족은 아직 판정하지 않았습니다. 메타데이터/문서 색인, LangGraph, 인용 UI 등은 구현되어 있지만 실제 모델과의 통합 검증, 문서 갱신·이용 조건, 검색 품질 평가가 필요합니다. 로그인·주문·실거래·공용 커뮤니티는 구현하지 않았습니다.
+
+최근 Windows 실연동 결과와 발견·수정한 RAG 오류는 [WINDOWS_VERIFICATION.md](docs/WINDOWS_VERIFICATION.md)에 기록했습니다. `docs/evaluation.json`에는 5개 질의 비교와 실패 사례의 수정 전후 응답이 있습니다.

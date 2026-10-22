@@ -1,0 +1,270 @@
+[
+  {
+    "symbol": "BTC",
+    "question": "비트코인 트랜잭션은 어떻게 검증되나요?",
+    "without_rag": "비트코인 트랜잭션 검증 과정은 블록체인 네트워크 내에서 거래의 유효성을 확인하기 위한 중요한 절차입니다. 주요 검증 단계는 다음과 같습니다:\n\n1. **디지털 서명 확인**  \n   트랜잭션은 보낸 사람이 자신의 개인 키로 서명한 디지털 서명을 포함합니다. 네트워크 노드들은 보낸 사람의 공개 키를 사용해 이 서명이 유효한지 검증합니다. 이를 통해 해당 트랜잭션이 실제 소유자에 의해 생성되었음을 확인합니다.\n\n2. **입력(UTXO) 확인**  \n   비트코인 트랜잭션은 이전에 사용되지 않은 UTXO(Unspent Transaction Output)를 입력으로 사용합니다. 노드들은 입력으로 사용된 UTXO가 실제로 존재하고 아직 사용되지 않았는지 확인합니다. 이미 사용된 UTXO를 재사용하는 이중 지불(double spending)을 방지하는 과정입니다.\n\n3. **잔액 검증**  \n   입력된 UTXO의 총액이 출력된 금액(수수료 포함)보다 크거나 같아야 합니다. 즉, 보내는 금액과 수수료를 합친 값이 입력 금액을 초과할 수 없습니다.\n\n4. **트랜잭션 구조 및 규칙 준수 확인**  \n   트랜잭션이 비트코인 프로토콜의 규칙에 맞게 구성되었는지 확인합니다. 예를 들어, 트랜잭션 크기 제한, 스크립트 실행 가능 여부, 출력 금액이 음수가 아닌지 등을 검사합니다.\n\n5. **네트워크 합의 및 블록 포함**  \n   검증된 트랜잭션은 메모리 풀(mempool)에 저장되고, 채굴자들이 이를 모아 블록에 포함시킵니다. 블록이 채굴되어 블록체인에 추가되면 트랜잭션은 최종적으로 확정됩니다.\n\n요약하면, 비트코인 트랜잭션 검증은 디지털 서명 확인, 입력 UTXO의 유효성 검사, 금액 검증, 프로토콜 규칙 준수 확인을 통해 이루어지며, 이를 통해 네트워크의 신뢰성과 무결성이 유지됩니다.",
+    "with_rag": "비트코인 트랜잭션 검증 과정은 다음과 같습니다. 트랜잭션은 비트코인 지갑의 개인키로 서명되어 발신자가 해당 코인을 사용할 권한이 있음을 수학적으로 증명합니다. 이 서명은 트랜잭션이 발행된 후 변경되지 않도록 보호합니다[2]. 모든 트랜잭션은 네트워크에 방송되고, 약 10~60분 내에 채굴(mining) 과정을 통해 첫 번째 확인을 받습니다[2][3]. 채굴은 분산 합의 시스템으로, 트랜잭션을 블록에 포함시켜 블록체인에 기록함으로써 시간 순서를 강제하고 네트워크의 중립성을 보호합니다. 블록은 엄격한 암호학적 규칙을 따라야 하며, 이를 통해 이전 블록을 변경하는 것을 방지합니다[3]. 이 과정은 경쟁적 복권과 같아 한 참가자가 연속으로 블록을 추가하는 것을 어렵게 만들어, 특정 그룹이나 개인이 블록체인을 조작하는 것을 막습니다[3][5]. 따라서 트랜잭션 검증은 개인키 서명과 채굴을 통한 블록체인 기록으로 이루어집니다.",
+    "status": "ok",
+    "citations": [
+      {
+        "number": 2,
+        "id": "KRW-BTC:6d8bb533debd0348:1",
+        "text": "relies on. All confirmed transactions are recorded in it, which lets wallets calculate their spendable balance and lets the network verify that the sender is authorized to spend those coins. The integrity and chronological order of the blockchain are protected by cryptography . Transactions - private keys A transaction is a transfer of value between Bitcoin wallets that gets recorded in the blockchain. Bitcoin wallets keep a secret piece of data called a private key , which is used to sign transactions, providing a mathematical proof that they came from the owner of the wallet. The signature also prevents the transaction from being altered by anybody after it has been issued. All transactions are broadcast to the network and usually receive their first confirmation within about 10 to 60",
+        "score": 0.4077567458152771,
+        "chunk_index": 1,
+        "group": "KRW-BTC:6d8bb533debd0348",
+        "title": "비트코인 기초",
+        "item_id": "KRW-BTC",
+        "source_type": "프로젝트 공식 가이드",
+        "fingerprint": "9e7120d60ab6205ca67e1b095a31e852d12616e57555a2bac5bf4e627d33e317",
+        "source": "https://bitcoin.org/en/how-it-works",
+        "own": false
+      },
+      {
+        "number": 3,
+        "id": "KRW-BTC:6d8bb533debd0348:2",
+        "text": "All transactions are broadcast to the network and usually receive their first confirmation within about 10 to 60 minutes, through a process called mining . Processing - mining Mining is a distributed consensus system that is used to confirm pending transactions by including them in the blockchain. It enforces a chronological order, protects the neutrality of the network, and allows different computers to agree on the state of the system. To be confirmed, transactions must be packed into a block that follows very strict cryptographic rules verified by the network. These rules prevent earlier blocks from being changed, because doing so would invalidate every block that comes after. Mining also works like a competitive lottery that makes it difficult for any single participant to keep adding",
+        "score": 0.3782618045806885,
+        "own": false,
+        "source": "https://bitcoin.org/en/how-it-works",
+        "source_type": "프로젝트 공식 가이드",
+        "chunk_index": 2,
+        "item_id": "KRW-BTC",
+        "title": "비트코인 기초",
+        "fingerprint": "9e7120d60ab6205ca67e1b095a31e852d12616e57555a2bac5bf4e627d33e317",
+        "group": "KRW-BTC:6d8bb533debd0348"
+      },
+      {
+        "number": 5,
+        "id": "KRW-BTC:6d8bb533debd0348:3",
+        "text": "after. Mining also works like a competitive lottery that makes it difficult for any single participant to keep adding new blocks one after another. This is what keeps any group or individual from controlling what goes into the blockchain, or rewriting past parts of it to reverse their own spending. Going down the rabbit hole This is just a short summary of Bitcoin. If you want to learn more of the details, you can read the original paper that describes its design, the developer documentation , or explore the Bitcoin wiki .",
+        "score": 0.26582616567611694,
+        "chunk_index": 3,
+        "fingerprint": "9e7120d60ab6205ca67e1b095a31e852d12616e57555a2bac5bf4e627d33e317",
+        "title": "비트코인 기초",
+        "source": "https://bitcoin.org/en/how-it-works",
+        "group": "KRW-BTC:6d8bb533debd0348",
+        "item_id": "KRW-BTC",
+        "source_type": "프로젝트 공식 가이드",
+        "own": false
+      }
+    ],
+    "elapsed_seconds": 7.86,
+    "review": "사실 정확성·근거 적합성 사람 검토 필요"
+  },
+  {
+    "symbol": "ETH",
+    "question": "이더리움 가스비는 무엇인가요?",
+    "without_rag": "이더리움 가스비(Gas Fee)는 이더리움 네트워크에서 거래나 스마트 계약 실행 시 발생하는 수수료를 의미합니다. 이더리움 블록체인은 분산 컴퓨팅 플랫폼으로, 모든 거래와 스마트 계약 실행에는 컴퓨팅 파워가 필요하며, 이 비용을 가스비로 지불합니다.\n\n가스비의 주요 개념은 다음과 같습니다:\n\n1. **가스(Gas)**: 이더리움 네트워크에서 연산 작업의 단위를 나타냅니다. 각 거래나 스마트 계약 실행에는 일정량의 가스가 소모됩니다.\n\n2. **가스 가격(Gas Price)**: 사용자가 지불하려는 가스 단위당 이더(ETH)의 가격입니다. 보통 Gwei(1 Gwei = 10^-9 ETH) 단위로 표시됩니다.\n\n3. **총 가스비 = 가스 사용량 × 가스 가격**: 거래를 처리하는 데 필요한 총 비용입니다.\n\n가스비는 네트워크 혼잡도에 따라 변동하며, 사용자가 높은 가스 가격을 제시하면 거래가 더 빨리 처리될 가능성이 높아집니다. 반대로 가스 가격이 낮으면 거래 처리 속도가 느려질 수 있습니다.\n\n요약하자면, 이더리움 가스비는 네트워크에서 거래나 스마트 계약 실행 시 컴퓨팅 자원을 사용한 대가로 지불하는 수수료입니다.",
+    "with_rag": "이더리움 가스비는 이더리움 네트워크에서 특정 작업을 수행하는 데 필요한 계산량을 측정하는 단위인 '가스'에 대해 지불하는 수수료입니다. 가스비는 작업에 사용된 가스량에 단위 가스당 비용을 곱한 금액이며, 거래가 성공하든 실패하든 지불해야 합니다. 가스비는 이더리움의 기본 통화인 이더(ETH)로 지불하며, 보통 gwei 단위로 표시됩니다. 1 gwei는 10억 wei(ETH의 가장 작은 단위)와 같습니다. 사용자는 거래 제출 시 지불할 가스비를 설정할 수 있고, 이 금액이 너무 낮으면 거래가 늦게 처리되거나 처리되지 않을 수 있습니다. 가스비는 기본 수수료(base fee)와 우선 수수료(priority fee, 팁)로 나뉘며, 기본 수수료는 프로토콜에 의해 정해지고 매 블록마다 소각(burned)됩니다[2][3][4][5].",
+    "status": "ok",
+    "citations": [
+      {
+        "number": 2,
+        "id": "KRW-ETH:5cadd0da692ffaa8:1",
+        "text": "Payment for computation is made in the form of a gas fee. The gas fee is the amount of gas used to do some operation, multiplied by the cost per unit gas . The fee is paid regardless of whether a transaction succeeds or fails. Diagram adapted from Ethereum EVM illustrated (opens in a new tab) Gas fees have to be paid in Ethereum's native currency, ether (ETH). Gas prices are usually quoted in gwei, which is a denomination of ETH. Each gwei is equal to one-billionth of an ETH (0.000000001 ETH or 10 -9 ETH). For example, instead of saying that your gas costs 0.000000001 ether, you can say your gas costs 1 gwei. The word 'gwei' is a contraction of 'giga-wei', meaning 'billion wei'. One gwei is equal to one billion wei. Wei itself (named after Wei Dai (opens in a new tab) , creator of b-money",
+        "score": 0.25833582878112793,
+        "source": "https://ethereum.org/en/developers/docs/gas/",
+        "own": false,
+        "item_id": "KRW-ETH",
+        "fingerprint": "f42533dde2f3cf48c665d6066e8f97f432fee38f2c5fe871b528181a6d4b83e1",
+        "source_type": "프로젝트 공식 가이드",
+        "title": "이더리움 가스와 수수료",
+        "chunk_index": 1,
+        "group": "KRW-ETH:5cadd0da692ffaa8"
+      },
+      {
+        "number": 3,
+        "id": "KRW-ETH:5cadd0da692ffaa8:0",
+        "text": "Gas and fees Copy .md Copy .md Edit page (opens in a new tab) On this page Gas is essential to the Ethereum network. It is the fuel that allows it to operate, in the same way that a car needs gasoline to run. Prerequisites To better understand this page, we recommend you first read up on transactions and the EVM . What is gas? Gas refers to the unit that measures the amount of computational effort required to execute specific operations on the Ethereum network. Since each Ethereum transaction requires computational resources to execute, those resources have to be paid for to ensure Ethereum is not vulnerable to spam and cannot get stuck in infinite computational loops. Payment for computation is made in the form of a gas fee. The gas fee is the amount of gas used to do some operation,",
+        "score": 0.2547186613082886,
+        "own": false,
+        "source": "https://ethereum.org/en/developers/docs/gas/",
+        "chunk_index": 0,
+        "fingerprint": "f42533dde2f3cf48c665d6066e8f97f432fee38f2c5fe871b528181a6d4b83e1",
+        "source_type": "프로젝트 공식 가이드",
+        "group": "KRW-ETH:5cadd0da692ffaa8",
+        "title": "이더리움 가스와 수수료",
+        "item_id": "KRW-ETH"
+      },
+      {
+        "number": 4,
+        "id": "KRW-ETH:5cadd0da692ffaa8:2",
+        "text": "wei'. One gwei is equal to one billion wei. Wei itself (named after Wei Dai (opens in a new tab) , creator of b-money (opens in a new tab) ) is the smallest unit of ETH. How are gas fees calculated? You can set the amount of gas you are willing to pay when you submit a transaction. By offering a certain amount of gas, you are bidding for your transaction to be included in the next block. If you offer too little, validators are less likely to choose your transaction for inclusion, meaning your transaction may execute late or not at all. If you offer too much, you might waste some ETH. So, how can you tell how much to pay? The total gas you pay is divided into two components: the base fee and the priority fee (tip). The base fee is set by the protocol—you have to pay at least this amount",
+        "score": 0.2455669641494751,
+        "own": false,
+        "title": "이더리움 가스와 수수료",
+        "item_id": "KRW-ETH",
+        "source_type": "프로젝트 공식 가이드",
+        "source": "https://ethereum.org/en/developers/docs/gas/",
+        "chunk_index": 2,
+        "fingerprint": "f42533dde2f3cf48c665d6066e8f97f432fee38f2c5fe871b528181a6d4b83e1",
+        "group": "KRW-ETH:5cadd0da692ffaa8"
+      },
+      {
+        "number": 5,
+        "id": "KRW-ETH:5cadd0da692ffaa8:5",
+        "text": "burned. Base fee Every block has a base fee which acts as a reserve price. To be eligible for inclusion in a block the offered price per gas must at least equal the base fee. The base fee is calculated independently of the current block and is instead determined by the blocks before it, making transaction fees more predictable for users. When the block is created this base fee is \"burned\" , removing it from circulation. The base fee is calculated by a formula that compares the size of the previous block (the amount of gas used for all the transactions) with the target size (half of the gas limit). The base fee will increase or decrease by a maximum of 12.5% per block if the target block size is above or below the target, respectively. This exponential growth makes it economically",
+        "score": 0.23174917697906494,
+        "chunk_index": 5,
+        "own": false,
+        "source_type": "프로젝트 공식 가이드",
+        "fingerprint": "f42533dde2f3cf48c665d6066e8f97f432fee38f2c5fe871b528181a6d4b83e1",
+        "title": "이더리움 가스와 수수료",
+        "item_id": "KRW-ETH",
+        "group": "KRW-ETH:5cadd0da692ffaa8",
+        "source": "https://ethereum.org/en/developers/docs/gas/"
+      }
+    ],
+    "elapsed_seconds": 8.27,
+    "review": "사실 정확성·근거 적합성 사람 검토 필요"
+  },
+  {
+    "symbol": "ETH",
+    "question": "수수료는 왜 필요한가요?",
+    "without_rag": "수수료는 특정 서비스나 거래를 제공하는 데 드는 비용을 충당하기 위해 필요합니다. 예를 들어, 은행, 중개업체, 플랫폼 운영자 등은 서비스를 제공하면서 인건비, 시스템 유지비, 보안 비용 등 다양한 비용이 발생합니다. 수수료는 이러한 비용을 보전하고, 서비스의 지속 가능성을 확보하며, 때로는 이익을 창출하기 위한 중요한 수단입니다. 또한, 수수료는 서비스 이용자들이 자원을 효율적으로 사용하도록 유도하는 역할도 합니다.",
+    "with_rag": "이더리움에서 수수료는 두 가지 주요 목적을 가진다. 첫째, 기본 수수료(base fee)는 프로토콜에 의해 설정되며, 이 금액 이상을 지불해야 거래가 유효하게 처리된다. 둘째, 우선 수수료(priority fee, 팁)는 검증자들이 해당 거래를 다음 블록에 포함시키도록 유인하는 역할을 한다. 기본 수수료는 매 블록마다 계산되어 소각되며, 거래가 블록에 포함되기 위한 최소 가격 역할을 한다. 우선 수수료는 네트워크 사용량에 따라 변동하며, 검증자에게 직접 지급된다. 이 구조는 거래 처리의 우선순위를 정하고, 네트워크 과부하를 조절하며, 검증자에게 보상을 제공하기 위해 필요하다[2][3][4][6].",
+    "status": "ok",
+    "citations": [
+      {
+        "number": 2,
+        "id": "KRW-ETH:5cadd0da692ffaa8:3",
+        "text": "the base fee and the priority fee (tip). The base fee is set by the protocol—you have to pay at least this amount for your transaction to be considered valid. The priority fee is a tip that you add to the base fee to make your transaction attractive to validators so that they choose it for inclusion in the next block. A transaction that only pays the base fee is technically valid but unlikely to be included because it offers no incentive to the validators to choose it over any other transaction. The 'correct' priority fee is determined by the network usage at the time you send your transaction—if there is a lot of demand then you might have to set your priority fee higher, but when there is less demand you can pay less. For example, let's say Jordan has to pay Taylor 1 ETH. An ETH",
+        "score": 0.25680339336395264,
+        "item_id": "KRW-ETH",
+        "chunk_index": 3,
+        "fingerprint": "f42533dde2f3cf48c665d6066e8f97f432fee38f2c5fe871b528181a6d4b83e1",
+        "own": false,
+        "source_type": "프로젝트 공식 가이드",
+        "source": "https://ethereum.org/en/developers/docs/gas/",
+        "group": "KRW-ETH:5cadd0da692ffaa8",
+        "title": "이더리움 가스와 수수료"
+      },
+      {
+        "number": 3,
+        "id": "KRW-ETH:5cadd0da692ffaa8:4",
+        "text": "higher, but when there is less demand you can pay less. For example, let's say Jordan has to pay Taylor 1 ETH. An ETH transfer requires 21,000 units of gas, and the base fee is 10 gwei. Jordan includes a tip of 2 gwei. The total fee would now be equal to: units of gas used * (base fee + priority fee) where the base fee is a value set by the protocol and the priority fee is a value set by the user as a tip to the validator. e.g., 21,000 * (10 + 2) = 252,000 gwei (0.000252 ETH). When Jordan sends the money, 1.000252 ETH will be deducted from Jordan's account. Taylor will be credited 1.0000 ETH. The validator receives the tip of 0.000042 ETH. The base fee of 0.00021 ETH is burned. Base fee Every block has a base fee which acts as a reserve price. To be eligible for inclusion in a block the",
+        "score": 0.2370794415473938,
+        "own": false,
+        "source_type": "프로젝트 공식 가이드",
+        "group": "KRW-ETH:5cadd0da692ffaa8",
+        "chunk_index": 4,
+        "item_id": "KRW-ETH",
+        "title": "이더리움 가스와 수수료",
+        "source": "https://ethereum.org/en/developers/docs/gas/",
+        "fingerprint": "f42533dde2f3cf48c665d6066e8f97f432fee38f2c5fe871b528181a6d4b83e1"
+      },
+      {
+        "number": 4,
+        "id": "KRW-ETH:5cadd0da692ffaa8:5",
+        "text": "burned. Base fee Every block has a base fee which acts as a reserve price. To be eligible for inclusion in a block the offered price per gas must at least equal the base fee. The base fee is calculated independently of the current block and is instead determined by the blocks before it, making transaction fees more predictable for users. When the block is created this base fee is \"burned\" , removing it from circulation. The base fee is calculated by a formula that compares the size of the previous block (the amount of gas used for all the transactions) with the target size (half of the gas limit). The base fee will increase or decrease by a maximum of 12.5% per block if the target block size is above or below the target, respectively. This exponential growth makes it economically",
+        "score": 0.23674923181533813,
+        "own": false,
+        "source_type": "프로젝트 공식 가이드",
+        "group": "KRW-ETH:5cadd0da692ffaa8",
+        "fingerprint": "f42533dde2f3cf48c665d6066e8f97f432fee38f2c5fe871b528181a6d4b83e1",
+        "chunk_index": 5,
+        "item_id": "KRW-ETH",
+        "title": "이더리움 가스와 수수료",
+        "source": "https://ethereum.org/en/developers/docs/gas/"
+      },
+      {
+        "number": 6,
+        "id": "KRW-ETH:5cadd0da692ffaa8:7",
+        "text": "or 202.7 gwei * 112.5% = 228.1 gwei . It's also important to note it is unlikely we will see extended spikes of full blocks because of the speed at which the base fee increases preceding a full block. Block Number Included Gas Fee Increase Current Base Fee 30 36M 12.5% 2705.6 gwei ... ... 12.5% ... 50 36M 12.5% 28531.3 gwei ... ... 12.5% ... 100 36M 12.5% 10302608.6 gwei Priority fee (tips) The priority fee (tip) incentivizes validators to maximize the number of transactions in a block, constrained only by the block gas limit. Without tips, a rational validator could include fewer—or even zero—transactions without any direct execution layer or consensus layer penalty, as staking rewards are independent of how many transactions are in a block. Additionally, tips allow users to outbid",
+        "score": 0.23254704475402832,
+        "own": false,
+        "chunk_index": 7,
+        "item_id": "KRW-ETH",
+        "source_type": "프로젝트 공식 가이드",
+        "group": "KRW-ETH:5cadd0da692ffaa8",
+        "source": "https://ethereum.org/en/developers/docs/gas/",
+        "fingerprint": "f42533dde2f3cf48c665d6066e8f97f432fee38f2c5fe871b528181a6d4b83e1",
+        "title": "이더리움 가스와 수수료"
+      }
+    ],
+    "elapsed_seconds": 5.34,
+    "review": "사실 정확성·근거 적합성 사람 검토 필요"
+  },
+  {
+    "symbol": "BTC",
+    "question": "업비트 ticker에서 현재가와 거래 시각 필드는 무엇인가요?",
+    "without_rag": "업비트(Upbit) API의 ticker 엔드포인트에서 제공하는 데이터 중에서,\n\n- **현재가** 필드는 `\"trade_price\"` 입니다.\n- **거래 시각** 필드는 `\"trade_time\"` 또는 `\"trade_timestamp\"` 입니다.\n\n구체적으로:\n\n- `\"trade_price\"`: 해당 시점의 체결 가격 (현재가)\n- `\"trade_time\"`: 체결 시각 (HHMMSS 형식, 한국 시간 기준)\n- `\"trade_timestamp\"`: 체결 시각의 타임스탬프 (밀리초 단위 UNIX 타임)\n\n예시 응답 일부:\n\n```json\n{\n  \"trade_price\": 50000,\n  \"trade_time\": \"123456\",\n  \"trade_timestamp\": 1615551234567,\n  ...\n}\n```\n\n따라서 현재가를 확인하려면 `\"trade_price\"` 필드를, 거래 시각을 확인하려면 `\"trade_time\"` 또는 `\"trade_timestamp\"` 필드를 사용하시면 됩니다.",
+    "with_rag": "업비트 ticker에서 현재가 필드는 \"trade_price\"이며, 거래 시각 필드는 \"trade_time\" (UTC 기준 HHmmss 형식)와 \"trade_timestamp\" (체결 타임스탬프, 밀리초 단위)입니다[2][3][5][6].",
+    "status": "ok",
+    "citations": [
+      {
+        "number": 2,
+        "id": "KRW-BTC:469df63f30f718de:2",
+        "text": "ttm 최근 거래 시각(UTC) String HHmmss trade_timestamp ttms 체결 타임스탬프(ms) Long ask_bid ab 매수/매도 구분 String ASK : 매도 BID : 매수 acc_ask_volume aav 누적 매도량 Double acc_bid_volume abv 누적 매수량 Double highest_52_week_price h52wp 52주 최고가 Double highest_52_week_date h52wdt 52주 최고가 달성일 String yyyy-MM-dd lowest_52_week_price l52wp 52주 최저가 Double lowest_52_week_date l52wdt 52주 최저가 달성일 String yyyy-MM-dd market_state ms 거래상태 String PREVIEW : 입금지원 ACTIVE : 거래지원가능 DELISTED : 거래지원종료 is_trading_suspended its 거래 정지 여부. Deprecated — 더 이상 사용되지 않는 필드입니다. 응답 처리 시 참조하지 않는 것을 권장합니다. Boolean delisting_date dd 거래지원 종료일 Date market_warning mw 유의 종목 여부. Deprecated — 더 이상 사용되지 않는 필드입니다. 응답 처리 시 참조하지 않는 것을 권장합니다. String NONE : 해당없음 CAUTION : 투자유의 timestamp tms 타임스탬프 (ms) Long stream_type st 스트림 타입 String SNAPSHOT : 스냅샷 REALTIME :",
+        "score": 0.49143290519714355,
+        "own": false,
+        "source": "https://docs.upbit.com/kr/reference/websocket-ticker",
+        "title": "업비트 현재가 데이터 필드",
+        "item_id": "KRW-BTC",
+        "source_type": "거래소 API 문서",
+        "fingerprint": "39b0463ad7c9b76ff2371f1846a81170febfc7c63e6bb5a77ded74944d6e9901",
+        "chunk_index": 2,
+        "group": "KRW-BTC:469df63f30f718de"
+      },
+      {
+        "number": 3,
+        "id": "KRW-BTC:469df63f30f718de:1",
+        "text": "ticker code cd 페어 코드 (예시: KRW-BTC ) String opening_price op 시가 Double high_price hp 고가 Double low_price lp 저가 Double trade_price tp 현재가 Double prev_closing_price pcp 전일 종가 Double change c 전일 종가 대비 가격 변동 방향 String RISE : 상승 EVEN : 보합 FALL : 하락 change_price cp 전일 대비 가격 변동의 절대값 Double signed_change_price scp 전일 대비 가격 변동 값 Double change_rate cr 전일 대비 등락율의 절대값 Double signed_change_rate scr 전일 대비 등락율 Double trade_volume tv 가장 최근 거래량 Double acc_trade_volume atv 누적 거래량(UTC 0시 기준) Double acc_trade_volume_24h atv24h 24시간 누적 거래량 Double acc_trade_price atp 누적 거래대금(UTC 0시 기준) Double acc_trade_price_24h atp24h 24시간 누적 거래대금 Double trade_date tdt 최근 거래 일자(UTC) String yyyyMMdd trade_time ttm 최근 거래 시각(UTC) String HHmmss trade_timestamp ttms 체결 타임스탬프(ms) Long ask_bid ab 매수/매도 구분 String ASK : 매도 BID : 매수",
+        "score": 0.484274685382843,
+        "source_type": "거래소 API 문서",
+        "group": "KRW-BTC:469df63f30f718de",
+        "title": "업비트 현재가 데이터 필드",
+        "chunk_index": 1,
+        "item_id": "KRW-BTC",
+        "source": "https://docs.upbit.com/kr/reference/websocket-ticker",
+        "own": false,
+        "fingerprint": "39b0463ad7c9b76ff2371f1846a81170febfc7c63e6bb5a77ded74944d6e9901"
+      },
+      {
+        "number": 5,
+        "id": "KRW-BTC:469df63f30f718de:4",
+        "text": "{\r\n    \"ticket\": \"ticker-monitor\"\r\n  },\r\n  {\r\n    \"type\": \"ticker\",\r\n    \"codes\": [\"KRW-BTC\", \"KRW-ETH\"]\r\n  },\r\n  {\r\n    \"format\": \"DEFAULT\"\r\n  }\r\n] 수신 메시지 예제 JSON {\r\n  \"type\": \"ticker\",\r\n  \"code\": \"KRW-BTC\",\r\n  \"opening_price\": 109165000.0,\r\n  \"high_price\": 110117000.0,\r\n  \"low_price\": 108958000.0,\r\n  \"trade_price\": 109868000.0,\r\n  \"prev_closing_price\": 109165000.0,\r\n  \"acc_trade_price\": 59726546304.62442,\r\n  \"change\": \"RISE\",\r\n  \"change_price\": 703000.0,\r\n  \"signed_change_price\": 703000.0,\r\n  \"change_rate\": 0.006439793,\r\n  \"signed_change_rate\": 0.006439793,\r\n  \"ask_bid\": \"BID\",\r\n  \"trade_volume\": 9.101e-05,\r\n  \"acc_trade_volume\": 544.24861805,\r\n  \"trade_date\": \"20260826\",\r\n  \"trade_time\": \"072400\",\r\n  \"trade_timestamp\": 1787729040682,\r\n  \"acc_ask_volume\": 271.9810004,",
+        "score": 0.4305409789085388,
+        "item_id": "KRW-BTC",
+        "chunk_index": 4,
+        "source": "https://docs.upbit.com/kr/reference/websocket-ticker",
+        "group": "KRW-BTC:469df63f30f718de",
+        "source_type": "거래소 API 문서",
+        "title": "업비트 현재가 데이터 필드",
+        "fingerprint": "39b0463ad7c9b76ff2371f1846a81170febfc7c63e6bb5a77ded74944d6e9901",
+        "own": false
+      },
+      {
+        "number": 6,
+        "id": "KRW-BTC:469df63f30f718de:5",
+        "text": "\"trade_time\": \"072400\",\r\n  \"trade_timestamp\": 1787729040682,\r\n  \"acc_ask_volume\": 271.9810004,\r\n  \"acc_bid_volume\": 272.26761765,\r\n  \"highest_52_week_price\": 179869000.0,\r\n  \"highest_52_week_date\": \"2025-10-09\",\r\n  \"lowest_52_week_price\": 88342000.0,\r\n  \"lowest_52_week_date\": \"2026-08-14\",\r\n  \"market_state\": \"ACTIVE\",\r\n  \"is_trading_suspended\": false,\r\n  \"delisting_date\": null,\r\n  \"market_warning\": \"NONE\",\r\n  \"timestamp\": 1787729042606,\r\n  \"acc_trade_price_24h\": 198189163442.74924,\r\n  \"acc_trade_volume_24h\": 1807.38027625,\r\n  \"stream_type\": \"SNAPSHOT\"\r\n}\r\n{\r\n  \"type\": \"ticker\",\r\n  \"code\": \"KRW-ETH\",\r\n  \"opening_price\": 3394000.0,\r\n  \"high_price\": 3436000.0,\r\n  \"low_price\": 3387000.0,\r\n  \"trade_price\": 3428000.0,\r\n  \"prev_closing_price\": 3394000.0,",
+        "score": 0.4051244854927063,
+        "group": "KRW-BTC:469df63f30f718de",
+        "fingerprint": "39b0463ad7c9b76ff2371f1846a81170febfc7c63e6bb5a77ded74944d6e9901",
+        "item_id": "KRW-BTC",
+        "chunk_index": 5,
+        "title": "업비트 현재가 데이터 필드",
+        "source": "https://docs.upbit.com/kr/reference/websocket-ticker",
+        "source_type": "거래소 API 문서",
+        "own": false
+      }
+    ],
+    "elapsed_seconds": 8.3,
+    "review": "사실 정확성·근거 적합성 사람 검토 필요"
+  },
+  {
+    "symbol": "BTC",
+    "question": "지금 출금할 수 있고 내일 가격이 오르나요?",
+    "without_rag": "안녕하세요! 출금 가능 여부나 내일 가격 변동에 대해 궁금해 하시는 것 같은데요, 어떤 자산이나 상품에 대해 말씀하시는지 구체적으로 알려주시면 더 정확한 정보를 드릴 수 있을 것 같습니다. 예를 들어, 은행 계좌 출금, 암호화폐, 주식 등 어떤 것인지 알려주세요. 그리고 가격 변동에 대해서는 시장 상황에 따라 달라지기 때문에 확실한 예측은 어렵지만, 관련 정보를 바탕으로 도움을 드릴 수 있습니다.",
+    "with_rag": "저장된 문서와 API 응답 예시로는 현재 가격이나 입출금 가능 여부를 확인할 수 없습니다. 현재 가격은 별도의 시세 화면에서, 입출금 상태는 거래소의 최신 안내에서 확인하세요. 미래 가격과 수익도 예측하지 않습니다.",
+    "status": "unsupported_live_query",
+    "citations": [],
+    "elapsed_seconds": 1.88,
+    "review": "실시간/미래 질문 회귀: 문서 예시 가격을 현재 시세로 답하지 않도록 차단. 정규식 분류 범위 밖 표현은 추가 평가 필요.",
+    "before_fix": {
+      "answer": "비트코인은 현재 업비트 거래소에서 거래 지원 중이며 출금 가능 여부는 명확히 제공되지 않았다[1][4][6]. 현재 가격은 3,428,000원이고, 전일 대비 가격이 상승(RISE) 중이며 34,000원 올랐다[4]. 내일 가격 상승 여부는 문서에 정보가 없어 확인 불가하다.",
+      "status": "ok"
+    }
+  }
+]
