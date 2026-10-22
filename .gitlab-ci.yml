@@ -1,0 +1,29 @@
+stages:
+  - sync
+
+sync-to-github:
+  stage: sync
+  image: alpine:latest
+  tags:
+    - github
+  variables:
+    # 얕은 복제를 비활성화하고 전체 커밋 히스토리를 가져와 push 오류 방지
+    GIT_DEPTH: 0
+  rules:
+    # master 브랜치에 푸시되었을 때만 트리거
+    - if: '$CI_COMMIT_BRANCH == "master"'
+  script:
+    - apk add --no-cache git
+    - echo "GitHub 저장소로 자동 동기화(Mirroring)를 시작합니다..."
+    
+    # 1. 안전을 위한 git 사용자 설정
+    - git config --global user.name "${GITLAB_USER_NAME}"
+    - git config --global user.email "${GITLAB_USER_EMAIL}"
+    
+    # 2. GitHub 원격 저장소 추가
+    - git remote add github https://${GITHUB_USERNAME}:${GITHUB_PAT}@github.com/${GITHUB_USERNAME}/${GITHUB_REPO_NAME}.git
+    
+    # 3. 현재 코드를 GitHub의 main 브랜치로 푸시
+    - git push -f github HEAD:refs/heads/main
+    
+    - echo "✅ GitHub 동기화 완료!"
