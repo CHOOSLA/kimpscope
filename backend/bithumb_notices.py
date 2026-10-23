@@ -9,6 +9,7 @@ guard=threading.Lock()
 
 def connect():
     c=notices.connect()
+    c.execute('CREATE TABLE IF NOT EXISTS notice_sync_state (key TEXT PRIMARY KEY, payload TEXT NOT NULL)')
     c.execute('CREATE TABLE IF NOT EXISTS bithumb_notices (url TEXT PRIMARY KEY, revision TEXT NOT NULL, payload TEXT NOT NULL)')
     return c
 
@@ -29,6 +30,13 @@ def save(meta,body):
 def records():
     with connect() as c:rows=c.execute('SELECT payload FROM bithumb_notices ORDER BY revision DESC').fetchall()
     return [json.loads(r[0]) for r in rows]
+
+def sync_status():
+    with connect() as c:
+        row=c.execute("SELECT payload FROM notice_sync_state WHERE key='bithumb'").fetchone()
+        count=c.execute('SELECT COUNT(*) FROM bithumb_notices').fetchone()[0]
+    return {**(json.loads(row[0]) if row else {}),**health,'stored':count,'history_complete':False}
+
 
 def documents(symbol):
     result=[]
@@ -66,7 +74,10 @@ def sync_once(count=20,session=None,wait=time.sleep):
                 if page.status_code==200:body=extract_body(page.content)
             except requests.RequestException:pass
             changed+=save(meta,body)
-        health.update(state='ready',last_poll_at=int(time.time()*1000),changed=changed)
+        urls={e.get('pc_url') for e in rows}
+        coverage={'possible_gap':bool(previous and urls and not urls.intersection(previous)),'last_successful_poll_at':int(time.time()*1000),'oldest_visible_published_at':min((e.get('published_at','') for e in rows),default=None)}
+        with connect() as c:c.execute('INSERT INTO notice_sync_state VALUES (?,?) ON CONFLICT(key) DO UPDATE SET payload=excluded.payload',('bithumb',json.dumps(coverage)))
+        health.update(state='ready',last_poll_at=coverage['last_successful_poll_at'],changed=changed)
         return changed
     except Exception:
         health.update(state='error',error='빗썸 공지 수집 실패. 다음 주기에 재시도합니다.')

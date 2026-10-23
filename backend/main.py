@@ -19,7 +19,7 @@ async def lifespan(app):
     bithumb_stop.set()
 app=FastAPI(title='KimpScope Research API',lifespan=lifespan)
 @app.get('/api/notices/status')
-def notice_status():return {'upbit':notices.health,'bithumb':bithumb_notices.health,'history_complete':False,'indexing':'on_query'}
+def notice_status():return {'upbit':notices.health,'bithumb':bithumb_notices.sync_status(),'history_complete':False,'indexing':'on_query'}
 
 state={'state':'idle','message':'색인 준비 전'};guard=threading.Lock()
 class Query(BaseModel):

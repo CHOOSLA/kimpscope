@@ -39,3 +39,19 @@ def test_poll_uses_metadata_and_skips_unchanged_body(meta):
     assert b.sync_once(session=s,wait=lambda _:None)==1
     assert b.sync_once(session=s,wait=lambda _:None)==0
     assert sum('feed.bithumb' in url for url in s.calls)==1
+
+def test_gap_status_survives_memory_reset(meta):
+    b.save(meta,'ONT old notice')
+    fresh={**meta,'pc_url':'https://feed.bithumb.com/notice/999','modified_at':'2026-10-24 00:00:00'}
+    class Response:
+        status_code=200
+        content=('<main>ONT '+('notice '*25)+'</main>').encode()
+        def raise_for_status(self):pass
+        def json(self):return [fresh]
+    class Session:
+        headers={}
+        def get(self,*args,**kwargs):return Response()
+    b.sync_once(session=Session(),wait=lambda _:None)
+    assert b.sync_status()['possible_gap'] is True
+    assert b.sync_status()['last_successful_poll_at']
+    assert b.sync_status()['history_complete'] is False
