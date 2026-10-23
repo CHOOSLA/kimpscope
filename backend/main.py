@@ -59,7 +59,7 @@ def query(q:Query):
     if not collection('items').get(ids=[item['id']])['ids']:raise HTTPException(409,'검색 색인이 없습니다. 데이터 색인을 먼저 실행하세요.')
     try:
         start=time.monotonic();out=graph().invoke({'item':item,'question':q.question,'k':q.k,'mode':q.mode})
-        return {k:out.get(k) for k in ['answer','citations','evidence','cache_hit','status']}|{'elapsed_ms':round((time.monotonic()-start)*1000)}
+        return {k:out.get(k) for k in ['answer','citations','evidence','cache_hit','status','collection']}|{'elapsed_ms':round((time.monotonic()-start)*1000)}
     except Exception:raise HTTPException(503,'검색 또는 생성 서비스가 응답하지 않습니다. 잠시 후 다시 시도하세요.')
 @app.post('/api/explore')
 def explore(q:Explore):
