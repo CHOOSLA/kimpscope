@@ -1,13 +1,48 @@
-# 데이터 출처와 이용 조건
+# 데이터 출처와 이용 조건 (NF2006·NF2007)
 
-수집일 2026-10-22 (사용자 시간대). 298개 업비트 KRW 마켓 스냅샷.
+확인일 2026-10-23. "확인"은 문서나 응답을 직접 열어 본 것만 적었다. 열어 보지 못한 조건은 **미확인**으로 남긴다.
 
-- 메타데이터 https://api.upbit.com/v1/market/all?is_details=true : 공식 API. 마켓 그룹 초당10회 제한. 본 앱은 초기 스냅샷을 사용한다. 최초 원문은 data/markets.json.
-- 시세 https://api.upbit.com/v1/ticker : 5초 캐시, 호출 병합. Binance https://data-api.binance.vision/api/v3/ticker/price. USDT 환산은 업비트 USDT/KRW 체결가이며 달러 환율이 아니다.
-- 공식 API 문서 https://docs.upbit.com/kr/reference/list-trading-pairs 및 https://docs.upbit.com/kr/reference/websocket-ticker.
-- 비트코인 가이드 https://bitcoin.org/en/how-it-works.
-- 이더리움 가스 문서 https://ethereum.org/en/developers/docs/gas/.
+## 1. 항목·시세·환율 (색인하지 않음, 질문 시점에 조회)
 
-교육용 로컬 검색 자료로 저장. 공식 출처라는 사실은 재배포 허가를 뜻하지 않는다. 원문 저작권은 각 권리자에게 있으며 외부 문서 팩은 공개 Site 배포 대상에서 제외한다. 상용/공개 배포 전 각 사이트 이용 약관과 라이선스의 실제 허용 범위를 확인해야 한다. 따라서 NF2007의 이용 조건 준수 완료 판정은 아직 보류한다.
+| 데이터 | 주소 | 키 | 쓰는 곳 | 호출 정책 | 이용 조건 |
+| --- | --- | --- | --- | --- | --- |
+| 업비트 KRW 마켓 목록 (항목 298건) | `api.upbit.com/v1/market/all?is_details=true` | 불필요 | `data/markets.json` 스냅샷 → 항목 색인 | 수집 시 1회 | 업비트 Open API 약관(2023-10 개정본 PDF) 확인: 데이터 저작권은 두나무, 무단 변경 금지, 유상 배포 금지. 출처 표시·공개 재표시 조항은 없음 → 교육용 시연 범위에서 사용 |
+| 업비트 전체 현재가 | `api.upbit.com/v1/ticker/all?quote_currencies=KRW` | 불필요 | 김프·실시간 근거 | 5초 캐시·요청 직렬화, 429/502/503 재시도 2회(지수 대기, Retry-After 존중) | 위와 같음 |
+| 업비트 캔들 | `api.upbit.com/v1/candles/...` | 불필요 | 차트 | 60초 캐시 | 위와 같음 |
+| 업비트 유의·주의 지정 | `/v1/market/all?is_details=true`의 `market_event` | 불필요 | 거래소 상태 근거 | 15분 수집 | 위와 같음 |
+| 바이낸스 현재가·거래 상태 | `api.binance.com`(실패 시 `api1`, `data-api.binance.vision`) `/api/v3/ticker/price`, `/api/v3/exchangeInfo` | 불필요 | 해외 가격, BREAK 심볼 제외 | 현재가 5초 캐시, 거래 상태 1시간 캐시, 호스트 3개 순차 시도 | **미확인** (시세 표시 조건 약관을 열어 보지 않음) |
+| 해외 시세 대체 (바이낸스 실패 시) | `www.okx.com/api/v5/market/tickers?instType=SPOT` → `api.gateio.ws/api/v4/spot/tickers` → `api.bybit.com/v5/market/tickers?category=spot` | 불필요 | 해외 가격. 사용한 출처를 응답·근거·화면에 표시 | 바이낸스 실패 후 5분간 대체 소스 사용, 24시간 거래량 0인 마켓 제외 | **미확인** |
+| 원/달러 기준환율 1 | 한국수출입은행 현재환율 API | 필요 (`KOREAEXIM_API_KEY`) | 김프 분모 | 1시간 캐시, 휴일은 최근 영업일까지 7일 역추적 | 공공데이터. 키 발급 대기 중이라 운영 미사용 |
+| 원/달러 기준환율 2 | `api.frankfurter.dev/v2/rate/usd/krw` | 불필요 | 키가 없을 때 김프 분모 | 1시간 캐시, 실패 후 5분 뒤 재시도. 둘 다 실패하면 김프를 비워 둠(고정 환율 대체 없음) | 오픈소스 공개 API(일 단위 기준환율). 상세 약관 **미확인** |
 
-수집 스크립트는 4개 고정 URL만 조회, 1초 간격, 최대3회 백오프 재시도, Retry-After 존중, 프로젝트 식별 User-Agent. 사용자 임의 URL 요청을 허용하지 않는다. 추후 공지 API 도입 시 robots/이용약관 및 개정 정책 확인이 필요하다.
+## 2. 설명 문서 (청킹·색인 대상)
+
+| 문서 | 주소 | 키 | 수집 방식 | 이용 조건 |
+| --- | --- | --- | --- | --- |
+| 항목 자체 문서 | 위 마켓 목록에서 생성 | — | 질문마다 항상 포함(선별 규칙보다 우선) | 업비트 약관과 같음 |
+| 빗썸 공지 목록 | `api.bithumb.com/v1/notices?count=20` | 불필요 | 웹 서비스 5분 주기 + 15분 예약 수집. 최근 20건만 주므로 쌓아 둔다 | 빗썸 공식 공개 API. 공지 원문 저작권은 빗썸 |
+| 빗썸 공지 본문 | 목록의 `pc_url` (`feed.bithumb.com/notice/...`) | 불필요 | 바뀐 공지만, 요청 사이 1.1초, 리다이렉트 거부, 개정 이력 보존 | 본문 페이지 자동 수집의 허용 범위 **미확인**(robots.txt 없음. 없다고 허용을 뜻하지는 않음) |
+| 업비트 공지 | `wss://api.upbit.com/websocket/v1/private` | 필요 | 키가 없어 운영에서 꺼져 있음 | — |
+| `data/documents.json` | — | — | **검색에 쓰지 않음.** `verified: true`인 문서만 후보가 되며, 현재 파일의 17건은 모두 표시가 없다. 실제 원문을 수집한 자료가 아니라 이전 작업에서 남은 예시이므로 근거로 쓰지 않는다 | — |
+
+## 3. 거래소 상태 (색인하지 않음, 상태 변화만 기록)
+
+| 데이터 | 주소 | 키 | 정책 | 이용 조건 |
+| --- | --- | --- | --- | --- |
+| 빗썸 입출금 현황 | `api.bithumb.com/public/assetsstatus/multichain/ALL` | 불필요 | 15분 수집, 요청 사이 1.1초. 실패하면 예외로 끝내고 기존 상태를 덮어쓰지 않음 | 구버전 공개 API. 0/1 의미는 BTC·ETH=1로 본 추론(1=가능). 중단될 수 있음 |
+| 빗썸 경보제 | `api.bithumb.com/v1/market/virtual_asset_warning` | 불필요 | 위와 같음. 호출 실패를 "경보 0건"으로 처리하지 않음 | 빗썸 공식 공개 API |
+
+## 4. 생성·임베딩 모델
+
+SSAFY GMS(OpenAI 호환) `gpt-4.1-mini`, `text-embedding-3-small`. 키는 서버 환경변수(`OPENAI_API_KEY`)로만 받는다. 저장소에는 `.env.example`의 빈 값만 있다.
+
+## 5. 식별 정보와 요청 범위
+
+- 빗썸 공지·상태 수집: `User-Agent: KimpScope-EducationalResearch/0.3`
+- 시세 조회: 브라우저형 User-Agent (업비트·바이낸스가 요구하는 식별 형식이 문서에 없음)
+- 사용자가 입력한 임의 URL은 요청하지 않는다(SSRF 차단). 고정 주소만 호출한다.
+- 위키백과는 이 저장소에서 쓰지 않는다(커버리지 실측 26%로 보류).
+
+## 6. 남은 확인
+
+공개 서비스로 전환하기 전에 바이낸스 시세 표시 조건, Frankfurter 이용 조건, 빗썸 공지 본문 수집 허용 범위를 각 사업자에게 확인해야 한다. 그 전까지 이 저장소는 교육용 시연 범위로 운영한다.
