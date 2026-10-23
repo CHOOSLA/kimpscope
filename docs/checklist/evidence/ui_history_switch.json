@@ -1,0 +1,11 @@
+{
+  "note": "2026-10-23 16:19 KST, 운영 화면(내장 브라우저). SOL 질문 → BTC로 전환해 질문 → SOL로 돌아온 직후 화면의 대화 목록을 DOM에서 읽은 값. 전환은 화면 함수 selectCoin을 직접 호출.",
+  "after_switch_back": {
+    "scope": "솔라나 (SOL) · 코인별 대화",
+    "messages": [
+      "솔라나 입출금이 최근에 중지된 적 있어? 이유는?",
+      "솔라나(SOL)는 빗썸에서 2026년 10월 21일 오후 6시부터 네트워크 업그레이드 지원 및 안정적인 입출"
+    ]
+  },
+  "btc_conversation": "screenshots/12_live_kimp_answer.jpg (비트코인 (BTC) · 코인별 대화, 질문 1·답변 1)"
+}
