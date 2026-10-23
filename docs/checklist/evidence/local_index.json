@@ -1,0 +1,77 @@
+{
+  "embedding": "결정적 스텁(외부 호출 없음). 수량 검증 전용",
+  "chroma_path": "임시 폴더",
+  "F2001": {
+    "loaded_items": 298,
+    "items_collection_count": 298,
+    "equal": true,
+    "sample_id": "KRW-BTC",
+    "sample_text": "비트코인 (Bitcoin, BTC). 거래소 Upbit, 거래 페어 KRW-BTC, 기준 통화 KRW, 유의종목 아니오. 이 정보는 수집 시점의 거래소 메타데이터이며 현재 입출금 가능 여부는 제공하지 않는다.",
+    "attributes_in_text": {
+      "한글명": true,
+      "영문명": true,
+      "심볼": true,
+      "거래 페어": true,
+      "기준 통화": true,
+      "거래소": true,
+      "유의종목 여부": true
+    }
+  },
+  "F2002": {
+    "items_first": 298,
+    "items_second": 298,
+    "documents_first": 1,
+    "documents_second": 1,
+    "unchanged": true
+  },
+  "F2005": {
+    "item": "KRW-BTC",
+    "documents": 1,
+    "source_types": [
+      "거래소 메타데이터"
+    ],
+    "runs": [
+      {
+        "chunk_size": 800,
+        "chunk_overlap": 120,
+        "chunks": 1
+      },
+      {
+        "chunk_size": 400,
+        "chunk_overlap": 60,
+        "chunks": 1
+      },
+      {
+        "chunk_size": 1200,
+        "chunk_overlap": 200,
+        "chunks": 1
+      }
+    ],
+    "differs": false,
+    "id_scheme": "항목ID:문서ID:청크순번",
+    "btc_eth_overlap_ids": 0
+  },
+  "F2007": {
+    "nodes": [
+      "__start__",
+      "retrieve",
+      "generate",
+      "__end__"
+    ],
+    "edges": [
+      [
+        "__start__",
+        "retrieve"
+      ],
+      [
+        "retrieve",
+        "generate"
+      ],
+      [
+        "generate",
+        "__end__"
+      ]
+    ]
+  },
+  "elapsed_s": 0.89
+}
