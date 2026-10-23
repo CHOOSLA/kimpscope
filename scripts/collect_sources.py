@@ -1,4 +1,9 @@
-"""Allowlisted official documents; modest rate/retry. No recursive scraping."""
+"""허용 목록의 공식 문서 4건을 받아 data/documents.json(검색 후보 문서 팩)을 만든다.
+
+고정 URL만 받는다(재귀 수집 없음). 요청 사이 1초, 429·5xx는 최대 3회 백오프 재시도(Retry-After 존중).
+실제로 받은 원문만 verified=true로 표시한다. 검색 후보(collection.candidates)는 verified=true인 문서만 쓴다.
+실행: python -m scripts.collect_sources   (거래소·공식 문서 사이트에 접속되는 PC에서)
+"""
 import json,time,hashlib
 from pathlib import Path
 import requests
@@ -15,6 +20,7 @@ for title,url,kind,symbols in sources:
  for n in soup(['script','style','nav','footer','header']):n.decompose()
  main=soup.find('article') or soup.find('main') or soup.find(id='content') or soup
  text=main.get_text(' ',strip=True)
- pack.append(dict(id=hashlib.sha256(url.encode()).hexdigest()[:16],title=title,body=text,source=url,source_type=kind,symbols=symbols,collected_at=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),own=False))
+ pack.append(dict(id=hashlib.sha256(url.encode()).hexdigest()[:16],title=title,body=text,source=url,source_type=kind,symbols=symbols,verified=True,collected_at=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),own=False))
+ if len(text)<200:raise SystemExit(f'{title}: 본문이 너무 짧습니다({len(text)}자). 페이지 구조가 바뀌었을 수 있어 저장하지 않습니다.')
  print(title,len(text));time.sleep(1)
 (ROOT/'data/documents.json').write_text(json.dumps(pack,ensure_ascii=False,indent=2),encoding="utf-8")
