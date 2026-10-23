@@ -29,7 +29,7 @@
                  ┌──────────────── 데이터 준비 ────────────────┐
 업비트 마켓 목록 ─▶ 항목 텍스트 298건 ─▶ 임베딩 ─▶ Chroma "items"
 빗썸 공지 21건(+본문) ─▶ Postgres(Neon) 보관·개정 이력 ─┐
-공식 문서 4건(업비트 API 문서·bitcoin.org·ethereum.org) ─▶ Postgres ─┤ 질문 시 후보
+공식 문서 7건(업비트 API 문서·bitcoin.org·ethereum.org·정부 보도자료 3) ─▶ Postgres ─┤ 질문 시 후보
                                                                       │
 질문 ─▶ [프롬프트 1] 검색어 추출 ─▶ 후보 ─▶ [프롬프트 2] 선별 ─▶ 청킹·임베딩 ─▶ Chroma "documents"
                                      (질문 캐시: 같은 질문은 다시 수집하지 않음)
