@@ -2,8 +2,8 @@
 // All market values and documents are fictional demonstration fixtures.
 const coins=[['BTC','비트코인',66770,2.32,1.82,'₿','#d48b30'],['ETH','이더리움',2530,1.87,-.64,'Ξ','#6479bb'],['XRP','리플',.536,3.18,3.27,'×','#3b485b'],['SOL','솔라나',151.8,2.65,4.12,'≋','#7155b8'],['DOGE','도지코인',.142,2.14,-1.23,'Ð','#ae9856'],['ADA','에이다',.354,1.62,.83,'₳','#366eae'],['AVAX','아발란체',27.2,2.81,2.17,'▲','#bf4b53'],['LINK','체인링크',11.28,1.94,-.42,'⬡','#4269c1'],['DOT','폴카닷',4.12,-.36,-2.08,'●','#bd4a87'],['TRX','트론',.158,1.29,.64,'T','#ad434c']].map(([symbol,name,usd,premium,change,glyph,color],index)=>({symbol,name,usd,premium,change,glyph,color,index}));
 const $=s=>document.querySelector(s),FX=1380;
-const money=n=>Math.round(n).toLocaleString('ko-KR');
-const pct=n=>(n>=0?'+':'')+n.toFixed(2)+'%';
+const money=n=>Number.isFinite(n)?Math.round(n).toLocaleString('ko-KR'):'—';
+const pct=n=>Number.isFinite(n)?(n>=0?'+':'')+n.toFixed(2)+'%':'—';
 function read(key,fallback){try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}}
 let saved=new Set(read('kimpscope-favorites',[]).filter(x=>coins.some(c=>c.symbol===x))),history=read('kimpscope-chats',{});if(!history||typeof history!=='object'||Array.isArray(history))history={};
 let selected=coins[0],filter='all',tab='market',sort=0,paused=false,range='1H',ticks=0;

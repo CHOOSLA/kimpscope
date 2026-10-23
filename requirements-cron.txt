@@ -1,0 +1,6 @@
+# Render 크론(scripts/cron_collect.py) 전용 최소 의존성. 버전은 requirements.txt와 맞춘다.
+requests==2.34.2
+beautifulsoup4==4.15.0
+soupsieve==3.0.3
+python-dotenv==1.2.4
+psycopg[binary]==3.3.6
