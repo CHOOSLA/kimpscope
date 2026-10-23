@@ -13,7 +13,8 @@ def candidates(item):
     pack=json.loads((DATA/'documents.json').read_text(encoding="utf-8")) if (DATA/'documents.json').exists() else []
     from .notices import documents
     from .bithumb_notices import documents as bithumb_documents
-    return [own]+[d for d in pack if d.get('verified') is True and (not d.get('symbols') or item['symbol'] in d['symbols'])]+documents(item['symbol'])+bithumb_documents(item['symbol'])
+    from .official_docs import documents as official_documents
+    return [own]+[d for d in pack if d.get('verified') is True and (not d.get('symbols') or item['symbol'] in d['symbols'])]+official_documents(item['symbol'])+documents(item['symbol'])+bithumb_documents(item['symbol'])
 
 def collect(item,question):
     docs=candidates(item)

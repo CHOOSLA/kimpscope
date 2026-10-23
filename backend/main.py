@@ -1,5 +1,6 @@
-import json,re,time,threading
-from fastapi import FastAPI,HTTPException
+import json,re,time,threading,os,hmac
+from fastapi import FastAPI,HTTPException,Request
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel,Field
 from .config import ROOT,TOP_K
@@ -9,12 +10,13 @@ from .collection import candidates
 from .pipeline import graph
 from .llm import available,structured,Conditions
 from contextlib import asynccontextmanager
-from . import notices,bithumb_notices,exchange_status
+from . import notices,bithumb_notices,exchange_status,official_docs
 from .notice_db import mode as notice_storage_mode
 @asynccontextmanager
 async def lifespan(app):
     stop=notices.start()
     bithumb_stop=bithumb_notices.start()
+    official_docs.start()
     yield
     stop.set()
     bithumb_stop.set()
@@ -35,7 +37,25 @@ class Query(BaseModel):
     mode:str=Field(default='similarity',pattern='^(similarity|mmr)$')
 class Explore(BaseModel):query:str=Field(min_length=1,max_length=300)
 @app.get('/api/status')
-def status():return dict(**state,items=len(items()),indexed=collection('items').count(),chunks=collection('documents').count(),llm_ready=available())
+def status():return dict(**state,items=len(items()),indexed=collection('items').count(),chunks=collection('documents').count(),llm_ready=available(),official_docs=official_docs.health)
+RELAY_ORIGINS={'https://feed.bithumb.com','https://docs.upbit.com','https://bitcoin.org','https://ethereum.org'}
+@app.post('/api/admin/relay')
+async def relay(request:Request):
+    """서버 위치에서 막힌 원문을 관리자 브라우저가 받아 넘기는 경로. RELAY_TOKEN이 없거나 맞지 않으면 없는 경로처럼 404.
+    본문은 text/plain JSON(token, kind, url, html)으로 받는다(사전 요청 없이 원문 사이트 탭에서 보낼 수 있게)."""
+    token=os.getenv('RELAY_TOKEN','');raw=await request.body()
+    if not token or len(raw)>800_000:raise HTTPException(404)
+    try:data=json.loads(raw)
+    except ValueError:raise HTTPException(404)
+    if not isinstance(data,dict) or not hmac.compare_digest(str(data.get('token','')),token):raise HTTPException(404)
+    url,html=str(data.get('url','')),str(data.get('html',''))
+    try:
+        if data.get('kind')=='bithumb':result={'ok':True,'changed':bithumb_notices.relay(url,html)}
+        elif data.get('kind')=='official':result={'ok':True,'chars':official_docs.save(url,html.encode(),via='browser_relay')}
+        else:raise ValueError('지원하지 않는 종류')
+    except ValueError as e:result={'ok':False,'reason':str(e)}
+    origin=request.headers.get('origin')
+    return JSONResponse(result,headers={'Access-Control-Allow-Origin':origin} if origin in RELAY_ORIGINS else {})
 @app.get('/api/items')
 def catalog():return items()
 @app.get('/api/documents/{symbol}')

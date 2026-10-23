@@ -56,6 +56,16 @@ def versions(notice_id):
     return [{**json.loads(payload),'fingerprint':digest} for payload,digest in rows]
 
 
+def relay(url,html):
+    """서버 위치에서 본문 페이지가 막힐 때(Render → feed.bithumb.com 403), 사용자 브라우저가 받은 원본 HTML로 본문을 채운다.
+    이미 공식 목록 API로 받은 공지만 대상으로 하고, 본문 추출은 서버 수집과 같은 extract_body를 쓴다."""
+    entry=next((e for e in records() if e.get('pc_url')==url),None)
+    if not entry:raise ValueError('목록에 없는 공지')
+    body=extract_body(html.encode() if isinstance(html,str) else html)
+    if body is None:raise ValueError('본문 구조 없음')
+    meta={k:v for k,v in entry.items() if k not in ('body','received_at')}|{'body_via':'browser_relay'}
+    return save(meta,body)
+
 def records():
     with connect() as c:rows=c.execute('SELECT payload FROM bithumb_notices ORDER BY revision DESC').fetchall()
     return [json.loads(r[0]) for r in rows]
