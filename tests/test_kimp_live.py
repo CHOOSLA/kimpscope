@@ -10,7 +10,7 @@ class Resp:
     def raise_for_status(self):
         if self.status_code>=400:
             import requests
-            raise requests.HTTPError(str(self.status_code))
+            raise requests.HTTPError(str(self.status_code),response=self)
 
 class Session:
     def __init__(self,routes):self.routes,self.calls,self.headers=routes,[],{}
@@ -28,7 +28,7 @@ class Session:
 @pytest.fixture(autouse=True)
 def reset_caches(monkeypatch):
     fx.cache.update(at=0,value=None,error=None)
-    market.cache.update(at=0,data=None);market.trading_cache.update(at=0,symbols=None)
+    market.cache.update(at=0,data=None);market.trading_cache.update(at=0,symbols=None);market.binance_down.update(until=0,reason='')
     monkeypatch.delenv('KOREAEXIM_API_KEY',raising=False)
     monkeypatch.setattr(exchange_status.time,'sleep',lambda s:None)
 
@@ -95,6 +95,31 @@ def test_trading_filter_unavailable_falls_back_to_featured(monkeypatch):
     data=market.full_snapshot()
     assert set(data['all_rows'])=={'BTC'} and data['trading_filter']=='featured_only'
 
+BLOCKED=Resp({'code':0,'msg':'Service unavailable from a restricted location'},451)
+OKX={'code':'0','data':[{'instId':'BTC-USDT','last':'100000','vol24h':'1200'},
+                        {'instId':'DATA-USDT','last':'0.0000085','vol24h':'0'},   # 거래 없는 마켓의 남은 가격
+                        {'instId':'BTC-USDC','last':'99990','vol24h':'10'}]}
+
+def test_binance_blocked_falls_back_to_okx_and_says_why(monkeypatch):
+    # 2026-10-23 운영(Render 싱가포르): 새 인스턴스에서 바이낸스 호출이 모두 HTTPError → 화면 시세 0건
+    s=Session({'binance':BLOCKED,'okx.com':OKX,'api.upbit.com/v1/ticker/all':UPBIT})
+    monkeypatch.setattr(market,'session',s)
+    monkeypatch.setattr(market.fx_rates,'usd_krw',lambda:{'rate':1400.0,'date':'d','source':'s'})
+    data=market.full_snapshot()
+    assert set(data['all_rows'])=={'BTC'} and data['foreign_source']=='OKX' and data['source']=='Upbit + OKX'
+    assert data['trading_filter']=='volume_24h' and data['error'] is None
+    assert 'api.binance.com 451' in data['foreign_fallback_reason'] and 'data-api.binance.vision 451' in data['foreign_fallback_reason']
+    # 실패 직후 5분 동안은 바이낸스를 다시 부르지 않는다
+    market.cache['at']=0;before=sum('binance' in u for u,_ in s.calls)
+    market.full_snapshot()
+    assert sum('binance' in u for u,_ in s.calls)==before
+
+def test_all_foreign_sources_fail_reports_each(monkeypatch):
+    monkeypatch.setattr(market,'session',Session({'binance':BLOCKED,'okx.com':Resp({},403),'api.upbit.com/v1/ticker/all':UPBIT}))
+    out=market.snapshot()
+    assert out['rows']==[] and out['stale'] is True
+    assert 'api.binance.com 451' in out['error'] and 'OKX 403' in out['error'] and 'Gate ConnectionError' in out['error']
+
 # ---------------------------------------------------------------- 거래소 상태 수집
 
 STATUS={'status':'0000','data':[{'currency':'BTC','net_type':'BTC','deposit_status':1,'withdrawal_status':1},
@@ -155,6 +180,10 @@ def test_state_evidence_is_stale_when_sync_old():
     ('출금 가능해?',{'state'}),
     ('내일 오를까?',{'forecast'}),
     ('김프가 왜 생기나요?',set()),
+    # 2026-10-23 운영: '최근'이 현재 상태 질문으로 분류돼, 공지로 답할 수 있는 지난 일을 거절했다
+    ('솔라나 네트워크 입출금이 최근에 중지된 적 있어?',set()),
+    ('지난주에 EGLD 출금 중지됐었어?',set()),
+    ('예전에 중지된 적 있는데 지금 입금 돼?',{'state'}),
     ('업비트 ticker에서 현재가와 거래 시각 필드는 무엇인가요?',set()),
 ])
 def test_question_kinds(q,expected):
