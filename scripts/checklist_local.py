@@ -1,4 +1,4 @@
-"""체크리스트 1·2·5·7번(F2001·F2002·F2005·F2007) 로컬 증빙.
+"""체크리스트 1·2·5·7·13번(F2001·F2002·F2005·F2007·F2012) 로컬 증빙.
 
 외부 모델을 부르지 않도록 임베딩을 결정적 스텁(텍스트 해시 → 벡터)으로 바꿔 실행한다.
 항목 수·청크 수·재색인 결과·그래프 구조는 임베딩 값과 무관하므로 실제 색인 코드(store.py)를 그대로 검증한다.
@@ -34,6 +34,12 @@ def chunk_count(item):
 def main():
     started=time.time();r={'embedding':'결정적 스텁(외부 호출 없음). 수량 검증 전용','chroma_path':'임시 폴더'}
     loaded=items()
+    from fastapi.testclient import TestClient
+    from backend.main import app
+    api=TestClient(app)  # lifespan(공지 수집 스레드)은 돌리지 않는다
+    # F2012: 색인이 없을 때 안내
+    no_index=api.post('/api/query',json={'symbol':'BTC','question':'비트코인 전송 전에 확인할 것은?'})
+    r['F2012']={'no_index':{'http':no_index.status_code,'message':no_index.json().get('detail')}}
     # F2001: 로드 건수 = 컬렉션 건수, 항목 1건의 색인 텍스트
     first=store.index_metadata()
     btc=get_item('BTC');saved=store.collection('items').get(ids=[btc['id']])
@@ -60,13 +66,16 @@ def main():
     eth=get_item('ETH');store.index_documents(eth,candidates(eth))
     b=set(store.collection('documents').get(where={'item_id':btc['id']})['ids']);e=set(store.collection('documents').get(where={'item_id':eth['id']})['ids'])
     r['F2005']['id_scheme']='항목ID:문서ID:청크순번';r['F2005']['btc_eth_overlap_ids']=len(b&e)
+    # F2012: 모델 키가 없을 때 안내 (색인은 있는 상태)
+    no_key=api.post('/api/query',json={'symbol':'BTC','question':'비트코인 전송 전에 확인할 것은?'}).json()
+    r['F2012']['no_key']={'status':no_key.get('status'),'answer':no_key.get('answer'),'evidence_shown':len(no_key.get('evidence') or [])}
     # F2007: LangGraph 노드
     r['F2007']={'nodes':list(graph().get_graph().nodes),'edges':[(x.source,x.target) for x in graph().get_graph().edges]}
     r['elapsed_s']=round(time.time()-started,2)
     out=Path('docs/checklist/evidence/local_index.json');out.parent.mkdir(parents=True,exist_ok=True)
     out.write_text(json.dumps(r,ensure_ascii=False,indent=2),encoding='utf-8')
     print(json.dumps(r,ensure_ascii=False,indent=2))
-    ok=r['F2001']['equal'] and all(r['F2001']['attributes_in_text'].values()) and r['F2002']['unchanged'] and r['F2005']['differs'] and not r['F2005']['btc_eth_overlap_ids']
+    ok=r['F2012']['no_index']['http']==409 and r['F2012']['no_key']['status']=='missing_key' and r['F2001']['equal'] and all(r['F2001']['attributes_in_text'].values()) and r['F2002']['unchanged'] and r['F2005']['differs'] and not r['F2005']['btc_eth_overlap_ids']
     return 0 if ok else 1
 
 if __name__=='__main__':sys.exit(main())
