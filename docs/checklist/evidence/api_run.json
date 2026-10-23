@@ -1,0 +1,774 @@
+{
+  "note": "운영 API에서 scripts/checklist_api.mjs와 같은 절차를 내장 브라우저로 실행한 원본 결과. 원본 문자열 SHA-256: 46d609f8ed931e185393f5c45ed05cbb2b89d6118fd13de4b82991c7e859182e",
+  "base": "https://kimpscope.onrender.com",
+  "started_at": "2026-10-23T07:00:20.470Z",
+  "status_before": {
+    "state": "idle",
+    "message": "색인 준비 전",
+    "items": 298,
+    "indexed": 298,
+    "chunks": 0,
+    "llm_ready": true,
+    "official_docs": {
+      "state": "ready",
+      "stored": 4,
+      "failures": {}
+    }
+  },
+  "status_after_reindex": {
+    "state": "ready",
+    "message": "298건 색인 완료",
+    "items": 298,
+    "indexed": 298,
+    "chunks": 0,
+    "llm_ready": true,
+    "official_docs": {
+      "state": "ready",
+      "stored": 4,
+      "failures": {}
+    }
+  },
+  "same_question": {
+    "question": "솔라나 입출금이 최근에 중지된 적 있어? 이유는?",
+    "first": {
+      "http": 200,
+      "status": "ok",
+      "ms": 23652,
+      "elapsed_ms": 23268,
+      "cache_hit": false,
+      "answer": "솔라나(SOL)는 빗썸에서 2026년 10월 21일 오후 6시부터 네트워크 업그레이드 지원 및 안정적인 입출금 서비스 제공을 위해 입출금이 일시 중지되었고, 10월 22일 오후 1시에 재개되었다. 중지 사유는 네트워크 업그레이드에 따른 노드 서버 업데이트 및 보수·점검 때문이었다[3][4][5][6]. 업비트의 입출금 상태는 근거에 없다[1].",
+      "cited_in_answer": [
+        1,
+        3,
+        4,
+        5,
+        6
+      ],
+      "citations": [
+        {
+          "number": 1,
+          "title": "솔라나 메타데이터",
+          "source_type": "항목 메타데이터",
+          "live": null
+        },
+        {
+          "number": 3,
+          "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+          "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+          "live": null
+        },
+        {
+          "number": 4,
+          "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+          "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+          "live": null
+        },
+        {
+          "number": 5,
+          "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+          "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+          "live": null
+        },
+        {
+          "number": 6,
+          "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+          "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+          "live": null
+        }
+      ],
+      "evidence": [
+        {
+          "id": "KRW-SOL",
+          "title": "솔라나 메타데이터",
+          "source_type": "항목 메타데이터",
+          "score": 1
+        },
+        {
+          "id": "live-market-SOL",
+          "title": "솔라나 실시간 시세·김프",
+          "source_type": "실시간 시세 스냅샷",
+          "score": 1
+        },
+        {
+          "id": "KRW-SOL:bithumb-1655299:2",
+          "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+          "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+          "score": 0.5924433469772339
+        },
+        {
+          "id": "KRW-SOL:bithumb-1655299:0",
+          "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+          "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+          "score": 0.5116931796073914
+        },
+        {
+          "id": "KRW-SOL:bithumb-1655299:3",
+          "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+          "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+          "score": 0.40661752223968506
+        },
+        {
+          "id": "KRW-SOL:bithumb-1655299:1",
+          "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+          "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+          "score": 0.333939790725708
+        }
+      ],
+      "collection": {
+        "keywords": [
+          "솔라나",
+          "SOL",
+          "솔라나 입출금 중지",
+          "Solana deposit withdrawal suspension",
+          "SOL network outage",
+          "Solana maintenance"
+        ],
+        "selection_mode": "llm",
+        "selected": [
+          {
+            "id": "own-KRW-SOL",
+            "title": "솔라나 거래소 메타데이터",
+            "source_type": "거래소 메타데이터"
+          },
+          {
+            "id": "bithumb-1655299",
+            "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+            "source_type": "빗썸 공지 원문 (업비트 상태 아님)"
+          }
+        ],
+        "discarded": [
+          {
+            "id": "0ee535b356d51da6",
+            "title": "업비트 거래 페어 안내",
+            "source_type": "거래소 API 문서"
+          },
+          {
+            "id": "469df63f30f718de",
+            "title": "업비트 현재가 데이터 필드",
+            "source_type": "거래소 API 문서"
+          }
+        ]
+      }
+    },
+    "second": {
+      "http": 200,
+      "status": "ok",
+      "ms": 14193,
+      "elapsed_ms": 13804,
+      "cache_hit": true,
+      "answer": "솔라나(SOL)는 빗썸에서 2026년 10월 21일 오후 6시부터 네트워크 업그레이드 지원 및 안정적인 입출금 서비스 제공을 위해 입출금이 일시 중지되었으며, 10월 22일 오후 1시에 재개되었다. 중지 사유는 네트워크 업그레이드에 따른 노드 서버 업데이트 및 보수·점검 때문이다[3][4][5][6]. 업비트 입출금 상태는 근거에 없다[1].",
+      "cited_in_answer": [
+        1,
+        3,
+        4,
+        5,
+        6
+      ],
+      "citations": [
+        {
+          "number": 1,
+          "title": "솔라나 메타데이터",
+          "source_type": "항목 메타데이터",
+          "live": null
+        },
+        {
+          "number": 3,
+          "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+          "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+          "live": null
+        },
+        {
+          "number": 4,
+          "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+          "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+          "live": null
+        },
+        {
+          "number": 5,
+          "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+          "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+          "live": null
+        },
+        {
+          "number": 6,
+          "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+          "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+          "live": null
+        }
+      ],
+      "evidence": [
+        {
+          "id": "KRW-SOL",
+          "title": "솔라나 메타데이터",
+          "source_type": "항목 메타데이터",
+          "score": 1
+        },
+        {
+          "id": "live-market-SOL",
+          "title": "솔라나 실시간 시세·김프",
+          "source_type": "실시간 시세 스냅샷",
+          "score": 1
+        },
+        {
+          "id": "KRW-SOL:bithumb-1655299:2",
+          "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+          "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+          "score": 0.5924433469772339
+        },
+        {
+          "id": "KRW-SOL:bithumb-1655299:0",
+          "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+          "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+          "score": 0.5116931796073914
+        },
+        {
+          "id": "KRW-SOL:bithumb-1655299:3",
+          "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+          "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+          "score": 0.40661752223968506
+        },
+        {
+          "id": "KRW-SOL:bithumb-1655299:1",
+          "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+          "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+          "score": 0.333939790725708
+        }
+      ],
+      "collection": {
+        "keywords": [
+          "솔라나",
+          "SOL",
+          "솔라나 입출금 중지",
+          "Solana deposit withdrawal suspension",
+          "SOL network outage",
+          "Solana maintenance"
+        ],
+        "selection_mode": "llm",
+        "selected": [
+          {
+            "id": "own-KRW-SOL",
+            "title": "솔라나 거래소 메타데이터",
+            "source_type": "거래소 메타데이터"
+          },
+          {
+            "id": "bithumb-1655299",
+            "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+            "source_type": "빗썸 공지 원문 (업비트 상태 아님)"
+          }
+        ],
+        "discarded": [
+          {
+            "id": "0ee535b356d51da6",
+            "title": "업비트 거래 페어 안내",
+            "source_type": "거래소 API 문서"
+          },
+          {
+            "id": "469df63f30f718de",
+            "title": "업비트 현재가 데이터 필드",
+            "source_type": "거래소 API 문서"
+          }
+        ]
+      }
+    }
+  },
+  "chunks_after_same_question": 6,
+  "top_k": {
+    "k3": [
+      "KRW-SOL",
+      "live-market-SOL",
+      "KRW-SOL:bithumb-1655299:2",
+      "KRW-SOL:bithumb-1655299:0"
+    ],
+    "k8": [
+      "KRW-SOL",
+      "live-market-SOL",
+      "KRW-SOL:bithumb-1655299:2",
+      "KRW-SOL:bithumb-1655299:0",
+      "KRW-SOL:bithumb-1655299:3",
+      "KRW-SOL:bithumb-1655299:1",
+      "KRW-SOL:bithumb-1655299:4"
+    ]
+  },
+  "similarity_vs_mmr": {
+    "similarity": [
+      {
+        "id": "KRW-SOL",
+        "title": "솔라나 메타데이터",
+        "source_type": "항목 메타데이터",
+        "score": 1
+      },
+      {
+        "id": "live-market-SOL",
+        "title": "솔라나 실시간 시세·김프",
+        "source_type": "실시간 시세 스냅샷",
+        "score": 1
+      },
+      {
+        "id": "KRW-SOL:bithumb-1655299:2",
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "score": 0.5924433469772339
+      },
+      {
+        "id": "KRW-SOL:bithumb-1655299:0",
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "score": 0.5116931796073914
+      },
+      {
+        "id": "KRW-SOL:bithumb-1655299:3",
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "score": 0.40661752223968506
+      },
+      {
+        "id": "KRW-SOL:bithumb-1655299:1",
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "score": 0.333939790725708
+      }
+    ],
+    "mmr": [
+      {
+        "id": "KRW-SOL",
+        "title": "솔라나 메타데이터",
+        "source_type": "항목 메타데이터",
+        "score": 1
+      },
+      {
+        "id": "live-market-SOL",
+        "title": "솔라나 실시간 시세·김프",
+        "source_type": "실시간 시세 스냅샷",
+        "score": 1
+      },
+      {
+        "id": "KRW-SOL:bithumb-1655299:2",
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "score": 0.5924433469772339
+      },
+      {
+        "id": "KRW-SOL:bithumb-1655299:0",
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "score": 0.5116931796073914
+      },
+      {
+        "id": "KRW-SOL:bithumb-1655299:4",
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "score": 0.3022649884223938
+      },
+      {
+        "id": "KRW-SOL:bithumb-1655299:3",
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "score": 0.40661752223968506
+      }
+    ]
+  },
+  "not_in_documents": {
+    "http": 200,
+    "status": "ok",
+    "ms": 15479,
+    "elapsed_ms": 15366,
+    "cache_hit": false,
+    "answer": "비트코인 창시자 사토시 나카모토의 실제 거주지 주소에 관한 정보는 제공된 근거에 없습니다. [1][2]",
+    "cited_in_answer": [
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "number": 1,
+        "title": "비트코인 메타데이터",
+        "source_type": "항목 메타데이터",
+        "live": null
+      },
+      {
+        "number": 2,
+        "title": "비트코인 실시간 시세·김프",
+        "source_type": "실시간 시세 스냅샷",
+        "live": "market"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "KRW-BTC",
+        "title": "비트코인 메타데이터",
+        "source_type": "항목 메타데이터",
+        "score": 1
+      },
+      {
+        "id": "live-market-BTC",
+        "title": "비트코인 실시간 시세·김프",
+        "source_type": "실시간 시세 스냅샷",
+        "score": 1
+      }
+    ]
+  },
+  "live_kimp": {
+    "http": 200,
+    "status": "ok",
+    "ms": 15363,
+    "elapsed_ms": 15264,
+    "cache_hit": false,
+    "answer": "2026-10-23 16:02:30 KST 기준 비트코인 김치 프리미엄은 +0.87%입니다[2].",
+    "cited_in_answer": [
+      2
+    ],
+    "citations": [
+      {
+        "number": 2,
+        "title": "비트코인 실시간 시세·김프",
+        "source_type": "실시간 시세 스냅샷",
+        "live": "market"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "KRW-BTC",
+        "title": "비트코인 메타데이터",
+        "source_type": "항목 메타데이터",
+        "score": 1
+      },
+      {
+        "id": "live-market-BTC",
+        "title": "비트코인 실시간 시세·김프",
+        "source_type": "실시간 시세 스냅샷",
+        "score": 1
+      }
+    ]
+  },
+  "why_kimp": {
+    "http": 200,
+    "status": "ok",
+    "ms": 15921,
+    "elapsed_ms": 15799,
+    "cache_hit": false,
+    "answer": "솔라나 김프가 다른 코인과 다르게 움직인 이유는 빗썸에서 솔라나 네트워크 업그레이드 지원을 위해 2026년 10월 21일 오후 6시부터 10월 22일 오후 1시까지 입출금이 일시 중지되었기 때문입니다. 이 기간 동안 입출금이 제한되어 거래에 영향을 미쳤을 가능성이 있습니다[3][4][6]. 현재 2026-10-23 16:02:46 기준 솔라나 김치 프리미엄은 +0.87%로 크지 않은 편입니다[2].",
+    "cited_in_answer": [
+      2,
+      3,
+      4,
+      6
+    ],
+    "citations": [
+      {
+        "number": 2,
+        "title": "솔라나 실시간 시세·김프",
+        "source_type": "실시간 시세 스냅샷",
+        "live": "market"
+      },
+      {
+        "number": 3,
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "live": null
+      },
+      {
+        "number": 4,
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "live": null
+      },
+      {
+        "number": 6,
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "live": null
+      }
+    ],
+    "evidence": [
+      {
+        "id": "KRW-SOL",
+        "title": "솔라나 메타데이터",
+        "source_type": "항목 메타데이터",
+        "score": 1
+      },
+      {
+        "id": "live-market-SOL",
+        "title": "솔라나 실시간 시세·김프",
+        "source_type": "실시간 시세 스냅샷",
+        "score": 1
+      },
+      {
+        "id": "KRW-SOL:bithumb-1655299:2",
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "score": 0.4273946285247803
+      },
+      {
+        "id": "KRW-SOL:bithumb-1655299:0",
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "score": 0.37665045261383057
+      },
+      {
+        "id": "KRW-SOL:bithumb-1655299:1",
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "score": 0.2649765610694885
+      },
+      {
+        "id": "KRW-SOL:bithumb-1655299:3",
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "score": 0.226629376411438
+      }
+    ]
+  },
+  "live_state": {
+    "http": 200,
+    "status": "unsupported_live_query",
+    "ms": 14306,
+    "elapsed_ms": 14165,
+    "cache_hit": false,
+    "answer": "현재 입출금·경보 상태을(를) 확인할 최신 실시간 근거가 없어 답하지 않습니다. 저장된 문서나 API 예시의 숫자는 현재 값이 아닙니다. 시세 화면 또는 거래소 최신 안내를 확인하세요.",
+    "cited_in_answer": [],
+    "citations": [],
+    "evidence": [
+      {
+        "id": "KRW-SOL",
+        "title": "솔라나 메타데이터",
+        "source_type": "항목 메타데이터",
+        "score": 1
+      },
+      {
+        "id": "live-market-SOL",
+        "title": "솔라나 실시간 시세·김프",
+        "source_type": "실시간 시세 스냅샷",
+        "score": 1
+      },
+      {
+        "id": "KRW-SOL:bithumb-1655299:2",
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "score": 0.4543544054031372
+      },
+      {
+        "id": "KRW-SOL:bithumb-1655299:0",
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "score": 0.42171788215637207
+      },
+      {
+        "id": "KRW-SOL:bithumb-1655299:1",
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "score": 0.35368990898132324
+      },
+      {
+        "id": "KRW-SOL:bithumb-1655299:4",
+        "title": "솔라나(SOL) 네트워크 계열 가상자산 49종 입출금 일시 중지 안내 (10/22 13시 재개)",
+        "source_type": "빗썸 공지 원문 (업비트 상태 아님)",
+        "score": 0.34592926502227783
+      }
+    ]
+  },
+  "forecast": {
+    "http": 200,
+    "status": "unsupported_live_query",
+    "ms": 16064,
+    "elapsed_ms": 15953,
+    "cache_hit": false,
+    "answer": "미래 가격·수익이나 매매 판단은 예측하지 않습니다. 현재 시세와 김치 프리미엄은 기준 시각과 함께 확인할 수 있습니다.",
+    "cited_in_answer": [],
+    "citations": [],
+    "evidence": [
+      {
+        "id": "KRW-BTC",
+        "title": "비트코인 메타데이터",
+        "source_type": "항목 메타데이터",
+        "score": 1
+      },
+      {
+        "id": "live-market-BTC",
+        "title": "비트코인 실시간 시세·김프",
+        "source_type": "실시간 시세 스냅샷",
+        "score": 1
+      }
+    ]
+  },
+  "explore": [
+    {
+      "conditions": {
+        "warning": true
+      },
+      "message": "6개 항목 일치",
+      "count": 6,
+      "mismatches": [],
+      "sample": [
+        {
+          "id": "KRW-BLAST",
+          "name": "블라스트",
+          "warning": true
+        },
+        {
+          "id": "KRW-EGLD",
+          "name": "멀티버스엑스",
+          "warning": true
+        },
+        {
+          "id": "KRW-MANTRA",
+          "name": "만트라",
+          "warning": true
+        },
+        {
+          "id": "KRW-BLUR",
+          "name": "블러",
+          "warning": true
+        },
+        {
+          "id": "KRW-SOPH",
+          "name": "소폰",
+          "warning": true
+        }
+      ]
+    },
+    {
+      "conditions": {
+        "symbol": "비트코인",
+        "warning": false
+      },
+      "message": "0개 항목 일치",
+      "count": 0,
+      "mismatches": [],
+      "sample": []
+    }
+  ],
+  "errors": {
+    "unknown_item": {
+      "status": 404,
+      "ms": 127,
+      "body": {
+        "detail": "선택 항목이 없습니다."
+      }
+    },
+    "bad_top_k": {
+      "status": 422,
+      "ms": 109,
+      "body": {
+        "detail": [
+          {
+            "type": "less_than_equal",
+            "loc": [
+              "body",
+              "k"
+            ],
+            "msg": "Input should be less than or equal to 12",
+            "input": 99,
+            "ctx": {
+              "le": 12
+            }
+          }
+        ]
+      }
+    },
+    "bad_candles": {
+      "status": 400,
+      "body": {
+        "detail": "유효하지 않은 조회 조건입니다."
+      }
+    },
+    "bad_notice_id": {
+      "status": 404,
+      "body": {
+        "detail": "Not Found"
+      }
+    }
+  },
+  "market": {
+    "fx": 1324.36,
+    "fx_source": "Frankfurter 공개 기준환율",
+    "fx_date": "2026-10-23",
+    "fx_label": "원/달러 Frankfurter 공개 기준환율 (2026-10-23)",
+    "usdt_krw": 1335,
+    "tether_premium": 0.8034069286296797,
+    "foreign_source": "OKX",
+    "foreign_fallback_reason": "Binance api.binance.com 418, api1.binance.com 418, data-api.binance.vision 418 (5분 대기 중)",
+    "trading_filter": "volume_24h",
+    "received_at": 1792739004721,
+    "stale": false,
+    "source": "Upbit + OKX",
+    "error": null,
+    "rows": [
+      {
+        "symbol": "BTC",
+        "premium": 0.8718811284784023,
+        "premium_usdt": 0.06792845791137037
+      },
+      {
+        "symbol": "ETH",
+        "premium": 0.8428589901767092,
+        "premium_usdt": 0.03913762713889657
+      },
+      {
+        "symbol": "XRP",
+        "premium": 0.8783695029251026,
+        "premium_usdt": 0.07436511977068072
+      },
+      {
+        "symbol": "SOL",
+        "premium": 0.8123616083140828,
+        "premium_usdt": 0.008883310551932588
+      },
+      {
+        "symbol": "DOGE",
+        "premium": 0.12341779213387305,
+        "premium_usdt": -0.6745695976101862
+      },
+      {
+        "symbol": "ADA",
+        "premium": 1.1425833503822647,
+        "premium_usdt": 0.3364731729679882
+      },
+      {
+        "symbol": "AVAX",
+        "premium": 0.9532556164845163,
+        "premium_usdt": 0.14865438820033106
+      },
+      {
+        "symbol": "LINK",
+        "premium": 0.9126722745750548,
+        "premium_usdt": 0.10839449704584947
+      },
+      {
+        "symbol": "DOT",
+        "premium": 0.8868066888257697,
+        "premium_usdt": 0.08273506098372962
+      },
+      {
+        "symbol": "TRX",
+        "premium": 0.7202897985709056,
+        "premium_usdt": -0.08245468341919748
+      }
+    ],
+    "available": 168
+  },
+  "notices_status": {
+    "upbit": {
+      "state": "disabled",
+      "last_received_at": null,
+      "error": null
+    },
+    "bithumb": {
+      "possible_gap": false,
+      "last_successful_poll_at": 1792738802490,
+      "oldest_visible_published_at": "2026-10-19 16:00:00",
+      "body_failures": 0,
+      "body_failure_last": null,
+      "state": "ready",
+      "last_poll_at": 1792738802490,
+      "error": null,
+      "changed": 0,
+      "stored": 21,
+      "history_complete": false
+    },
+    "exchange_status": {},
+    "history_complete": false,
+    "indexing": "on_query",
+    "storage": "postgresql"
+  },
+  "elapsed_s": 190.6
+}

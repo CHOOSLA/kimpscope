@@ -85,8 +85,14 @@ def query(q:Query):
 def explore(q:Explore):
     text=q.query.strip();condition={}
     if available():
-        try:condition=structured('조건을 symbol, warning, name_contains로 추출한다. 유의종목이 아니면 warning=false. 없는 조건은 null. 시장 가격 조건은 지원하지 않는다.',text,Conditions).model_dump(exclude_none=True)
+        try:condition=structured('조건을 symbol, warning, name_contains로 추출한다. symbol은 영문 티커(예: BTC)로 쓴다. 유의종목이 아니면 warning=false. 없는 조건은 null. 시장 가격 조건은 지원하지 않는다.',text,Conditions).model_dump(exclude_none=True)
         except Exception:raise HTTPException(503,'조건 해석을 완료하지 못했습니다.')
+        # 모델이 티커 대신 코인 이름을 symbol에 넣는 경우(운영 실측: symbol='비트코인' → 0건)를 티커로 바꾼다
+        if 'symbol' in condition and not get_item(str(condition['symbol']).upper()):
+            named=next((x for x in items() if str(condition['symbol']).lower() in (x['name'].lower(),x['english_name'].lower())),None)
+            if named:condition['symbol']=named['symbol']
+            else:condition['name_contains']=condition.pop('symbol')
+        elif 'symbol' in condition:condition['symbol']=str(condition['symbol']).upper()
     else:
         if re.search(r'가격|이상|이하|프리미엄|거래량',text):return {'items':[],'conditions':{},'message':'현재 조건 탐색은 이름·심볼·유의종목 여부를 지원합니다. 가격 조건은 시세표 필터를 사용하세요.'}
         if '유의' in text:condition['warning']=not any(w in text for w in ['아닌','아니','제외','없는'])

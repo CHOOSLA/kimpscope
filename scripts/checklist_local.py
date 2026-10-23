@@ -50,7 +50,11 @@ def main():
                 'attributes_in_text':{k:(v in text) for k,v in attrs.items()}|{'유의종목 여부':'유의종목' in text}}
     # F2002: 두 번 색인해도 늘지 않는다 (메타데이터, 외부 문서 모두)
     second=store.index_metadata()
-    docs=candidates(btc)
+    # 운영 문서(빗썸 공지·공식 문서)는 원격 저장소에 있어 이 실행 환경에서 읽지 못한다. 청크 수는 본문 길이와 설정에만 달려 있으므로
+    # 저장소 안의 장문(docs/LIVE_EVIDENCE.md)을 BTC 외부 문서 1건으로 추가해 설정별 청크 수를 비교한다.
+    long_doc=dict(id='repo-live-evidence',title='김프 계산 기준과 실시간 근거',body=Path('docs/LIVE_EVIDENCE.md').read_text(encoding='utf-8'),
+                  source='docs/LIVE_EVIDENCE.md',source_type='저장소 문서(청크 시험용)')
+    docs=candidates(btc)+[long_doc]
     store.index_documents(btc,docs);c1=chunk_count(btc)
     store.index_documents(btc,docs);c2=chunk_count(btc)
     r['F2002']={'items_first':first,'items_second':second,'documents_first':c1,'documents_second':c2,'unchanged':first==second and c1==c2}
@@ -60,7 +64,7 @@ def main():
         store.CHUNK_SIZE,store.CHUNK_OVERLAP=size,overlap
         store.index_documents(btc,docs);runs.append({'chunk_size':size,'chunk_overlap':overlap,'chunks':chunk_count(btc)})
     store.CHUNK_SIZE,store.CHUNK_OVERLAP=base
-    r['F2005']={'item':btc['id'],'documents':len(docs),'source_types':sorted({d['source_type'] for d in docs}),'runs':runs,
+    r['F2005']={'item':btc['id'],'documents':len(docs),'long_doc_chars':len(long_doc['body']),'source_types':sorted({d['source_type'] for d in docs}),'runs':runs,
                 'differs':len({x['chunks'] for x in runs})==len(runs)}
     # F2005 ID 충돌: 같은 문서가 다른 항목에 색인돼도 덮어쓰지 않는다
     eth=get_item('ETH');store.index_documents(eth,candidates(eth))

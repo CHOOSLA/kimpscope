@@ -19,3 +19,12 @@ def test_unknown_item():
     assert client.post('/api/query',json={'symbol':'UNKNOWN','question':'질문'}).status_code==404
 def test_limits():
     assert client.post('/api/query',json={'symbol':'BTC','question':'질문','k':999}).status_code==422
+
+def test_llm_condition_name_in_symbol_is_normalized(monkeypatch):
+    # 운영(2026-10-23): 모델이 symbol에 '비트코인'을 넣어 '유의종목이 아닌 비트코인'이 0건이었다
+    from backend import main
+    from backend.llm import Conditions
+    monkeypatch.setattr(main,'available',lambda:True)
+    monkeypatch.setattr(main,'structured',lambda prompt,text,schema:Conditions(symbol='비트코인',warning=False))
+    r=client.post('/api/explore',json={'query':'유의종목이 아닌 비트코인'}).json()
+    assert r['conditions']=={'symbol':'BTC','warning':False} and [x['symbol'] for x in r['items']]==['BTC']
