@@ -65,7 +65,7 @@ LangGraph:  retrieve ───────────────────�
 - **서버에서 막힌 원문.** 빗썸 공지 본문 페이지는 Render 서버 요청에 403을 돌려줍니다. User-Agent를 브라우저로 위장해 우회하지 않고, 관리자가 브라우저로 받은 원본 HTML을 토큰이 있는 경로(`/api/admin/relay`)로 넘기면 서버가 같은 추출기로 본문을 뽑습니다. 이미 공식 목록 API로 받은 공지만 대상이며, 넘겨받은 본문에는 `body_via: browser_relay`가 붙습니다.
 - **현재 값 질문은 두 번 막습니다.** 생성 전: 최신 실시간 근거가 없으면 모델을 부르지 않음. 생성 후: 답변이 그 근거를 인용하지 않으면 폐기(`live_citation_missing`). 문서 속 API 예시 가격을 현재가로 답한 실제 오류(2026-10-22)에서 나온 규칙입니다.
 
-자세한 기록: [김프 계산과 실시간 근거](docs/LIVE_EVIDENCE.md) · [공지 수집 파이프라인](docs/NOTICE_PIPELINE.md) · [저장소 선택](docs/FREE_STORAGE_PLAN.md)
+자세한 기록: [RAG 파이프라인 설계문서](docs/RAG_DESIGN.md) · [김프 계산과 실시간 근거](docs/LIVE_EVIDENCE.md) · [공지 수집 파이프라인](docs/NOTICE_PIPELINE.md) · [저장소 선택](docs/FREE_STORAGE_PLAN.md)
 
 ## 4. 실행
 
@@ -117,12 +117,14 @@ node scripts/checklist_api.mjs https://kimpscope.onrender.com   # 운영 API로 
 | 투자 판단 질문 | 보류, 화면에 "인용 문서 없음" 표시 |
 | 자동 테스트 | 67개 통과 ([테스트 결과표](docs/TEST_RESULTS.md)) |
 
-실패 1건은 27번(요구사항 정의서·RAG 파이프라인 설계문서 별도 문서 없음)입니다. 점검 중 발견해 고친 문제 5건은 RESULTS.md 끝에 있습니다.
+실패 1건은 27번입니다. 요구사항 정의서와 RAG 파이프라인 설계문서는 추가했고, 상호 체크리스트가 아직 없습니다. 점검 중 발견해 고친 문제 5건은 RESULTS.md 끝에 있습니다.
 
 ## 6. 문서 목록
 
 | 문서 | 내용 |
 | --- | --- |
+| [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md) | 요구사항 정의서: 도메인 조건 충족 근거, 필수·선택·비기능 요구사항별 구현과 확인 결과 |
+| [docs/RAG_DESIGN.md](docs/RAG_DESIGN.md) | RAG 파이프라인 설계문서: 컬렉션·메타데이터·청크 ID, 수집·선별·청킹, 프롬프트 3개, 설정값과 변경 결과, 실시간 근거 규칙, 겪은 문제 |
 | [docs/checklist/RESULTS.md](docs/checklist/RESULTS.md) | 셀프 체크리스트 27개 항목 결과·증빙 (엑셀 기입본과 원본도 같은 폴더) |
 | [docs/TEST_RESULTS.md](docs/TEST_RESULTS.md) | 자동 테스트 결과표와 요구사항 대응 |
 | [docs/RAG_COMPARISON.md](docs/RAG_COMPARISON.md) | RAG 전후 답변 비교 (F2015) |
