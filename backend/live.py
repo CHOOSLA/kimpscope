@@ -91,7 +91,8 @@ def evidence(item):
 
 # ---------------------------------------------------------------- 질문 분류
 
-NOW=r'(지금|현재|오늘|실시간|요즘|최근)'
+NOW=r'(지금|현재|오늘|실시간|요즘)'
+PAST=r'(적 ?있|했었|됐었|되었었|였던|지난|과거|이력|기록|최근에.*(있었|됐|되었|했))'  # 지난 일은 공지 문서로 답한다
 PRICE=r'(가격|시세|김프|김치.?프리미엄|프리미엄|환율|얼마)'
 STATE=r'(출금|입금|입출금|거래.?가능|유의|경보|주의.?종목|막혔|막힌|중지|중단)'
 FORECAST=r'(내일|미래|앞으로|다음.?(주|달)|전망|예측).*(가격|시세|오르|올라|내리|하락|상승|수익|김프)|(오를까|내릴까|살까|팔까|사도 될까|팔아야)'
@@ -101,6 +102,7 @@ def needs(question):
     q=question.strip()
     if re.search(FORECAST,q):return {'forecast'}
     kinds=set()
+    if re.search(PAST,q) and not re.search(NOW,q):return kinds
     if re.search(NOW+r'.*'+PRICE,q) or re.search(PRICE+r'.*'+NOW,q):kinds.add('market')
     if re.search(NOW+r'.*'+STATE,q) or re.search(STATE+r'.*'+NOW,q) or re.search(r'(출금|입금|입출금).*(돼|되나|가능|할 수)',q):kinds.add('state')
     return kinds

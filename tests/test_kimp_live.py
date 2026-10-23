@@ -180,6 +180,10 @@ def test_state_evidence_is_stale_when_sync_old():
     ('출금 가능해?',{'state'}),
     ('내일 오를까?',{'forecast'}),
     ('김프가 왜 생기나요?',set()),
+    # 2026-10-23 운영: '최근'이 현재 상태 질문으로 분류돼, 공지로 답할 수 있는 지난 일을 거절했다
+    ('솔라나 네트워크 입출금이 최근에 중지된 적 있어?',set()),
+    ('지난주에 EGLD 출금 중지됐었어?',set()),
+    ('예전에 중지된 적 있는데 지금 입금 돼?',{'state'}),
     ('업비트 ticker에서 현재가와 거래 시각 필드는 무엇인가요?',set()),
 ])
 def test_question_kinds(q,expected):
