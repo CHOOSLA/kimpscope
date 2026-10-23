@@ -2,6 +2,13 @@
 
 실행: `python -m pytest -q` → **72 passed** (2026-10-23, Windows·Python 3.12.10, 외부 네트워크·모델 호출 없음. 이전 기록 67개는 Python 3.13)
 
+체크리스트 항목을 다시 확인하는 명령:
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.checklist_local          # F2001·F2002·F2005·F2007·F2012 (임베딩 스텁, 로컬)
+node scripts/checklist_api.mjs https://kimpscope.onrender.com  # 운영 API로 나머지 항목 (생성 모델 호출 발생)
+```
+
 테스트는 실측 응답과 같은 모양의 모의 데이터를 씁니다. 운영 환경에서 직접 실행한 결과는 [체크리스트 결과](checklist/RESULTS.md)에 따로 있습니다.
 
 | 파일 | 테스트 | 확인하는 것 | 연결 요구사항 |

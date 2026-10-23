@@ -190,3 +190,30 @@ LangGraph는 `retrieve → generate` 두 노드다(`pipeline.graph()`). 수집·
 - 빗썸 공지 본문은 Render 서버에서 403이다. 국내 IP에서 도는 수집이 없으면 새 공지는 본문 없이 저장되고 검색 후보에서 빠진다.
 - 15분 예약 수집(GitHub Actions)은 이 문서 작성 시점까지 운영 DB에 기록을 남기지 않았다. 그 전까지 거래소 상태 근거는 최신이 아니어서 상태 질문은 거절된다.
 - 질문 캐시는 한 파일이고 크기 제한이 없다. 운영에서는 재배포 때 비워지지만, 오래 켜 두는 환경이라면 정리 정책이 필요하다.
+
+## 10. 모듈과 환경변수
+
+| 모듈 | 책임 |
+| --- | --- |
+| `backend/catalog.py` | 항목 메타데이터 로드, 항목 텍스트 구성 (도메인 종속 부분) |
+| `backend/collection.py` | 후보 문서 모음, 프롬프트 1·2, 질문 캐시 |
+| `backend/store.py` | Chroma 두 컬렉션, 청킹·색인·재색인, 유사도/MMR 검색 |
+| `backend/pipeline.py`, `prompts.py` | LangGraph 두 노드, 프롬프트 3, 인용 검사 |
+| `backend/live.py` | 실시간 근거 생성, 현재 값 질문 분류 |
+| `backend/market.py`, `fx.py` | 시세·김프·환율 |
+| `backend/bithumb_notices.py`, `official_docs.py`, `exchange_status.py`, `notice_db.py` | 공지·공식 문서·거래소 상태 수집과 저장 |
+| `backend/main.py` | API |
+| `dist/` | 화면 (HTML·CSS·JS) |
+| `scripts/cron_collect.py` | 15분 예약 수집 진입점 (GitHub Actions) |
+
+환경변수(`.env`, Git에 올리지 않음):
+
+| 이름 | 필수 | 설명 |
+| --- | --- | --- |
+| `OPENAI_API_KEY` | 예 | 생성·임베딩. 없으면 시세·조건 탐색·원문 조회만 동작하고 질문에는 키 없음 안내 |
+| `OPENAI_BASE_URL` | 예 | SSAFY GMS 주소 (`.env.example`에 있음) |
+| `CHAT_MODEL`, `EMBED_MODEL` | 아니오 | 기본 `gpt-4.1-mini`, `text-embedding-3-small` |
+| `CHUNK_SIZE`, `CHUNK_OVERLAP`, `TOP_K` | 아니오 | 기본 800, 120, 5 |
+| `DATABASE_URL` | 아니오 | 공지·상태 저장용 PostgreSQL. 없으면 로컬 SQLite |
+| `KOREAEXIM_API_KEY` | 아니오 | 수출입은행 환율. 없으면 Frankfurter |
+| `RELAY_TOKEN` | 아니오 | 관리자 브라우저 경유 원문 경로(`/api/admin/relay`). 없으면 경로가 꺼짐 |
