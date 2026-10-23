@@ -1,5 +1,5 @@
 """Public Bithumb notice polling; official metadata and fetched HTML kept distinct."""
-import json,time,threading,os,re
+import json,time,threading,os,re,hashlib
 from urllib.parse import urlparse
 import requests
 from bs4 import BeautifulSoup
@@ -11,21 +11,50 @@ def connect():
     c=notices.connect()
     c.execute('CREATE TABLE IF NOT EXISTS notice_sync_state (key TEXT PRIMARY KEY, payload TEXT NOT NULL)')
     c.execute('CREATE TABLE IF NOT EXISTS bithumb_notices (url TEXT PRIMARY KEY, revision TEXT NOT NULL, payload TEXT NOT NULL)')
+    c.execute('CREATE TABLE IF NOT EXISTS bithumb_notice_versions (url TEXT NOT NULL, revision TEXT NOT NULL, fingerprint TEXT NOT NULL, payload TEXT NOT NULL, PRIMARY KEY(url,revision,fingerprint))')
     return c
 
 def valid_url(url):
     p=urlparse(url)
     return p.scheme=='https' and p.hostname=='feed.bithumb.com' and bool(re.fullmatch(r'/notice/\d+',p.path)) and not p.query and not p.fragment
 
+def fingerprint(payload):
+    content={k:v for k,v in payload.items() if k!='received_at'}
+    return hashlib.sha256(json.dumps(content,sort_keys=True,ensure_ascii=False).encode()).hexdigest()
+
+
+def archive(c,payload):
+    revision=payload.get('modified_at') or payload['published_at']
+    c.execute('INSERT INTO bithumb_notice_versions VALUES (?,?,?,?) ON CONFLICT DO NOTHING',
+              (payload['pc_url'],revision,fingerprint(payload),json.dumps(payload,ensure_ascii=False)))
+
+
 def save(meta,body):
     url=meta.get('pc_url','');revision=meta.get('modified_at') or meta.get('published_at')
     if not valid_url(url) or not revision or not meta.get('title'):raise ValueError('Invalid official metadata')
     payload={**meta,'body':body,'received_at':int(time.time()*1000)}
     with connect() as c:
+        # Lock before reading to keep history and latest pointer atomic across workers.
+        if c.postgres:c.execute('SELECT pg_advisory_xact_lock(hashtextextended(?,0))',(url,))
+        else:c.execute('BEGIN IMMEDIATE')
         old=c.execute('SELECT revision,payload FROM bithumb_notices WHERE url=?',(url,)).fetchone()
-        if old and (old[0]>revision or (old[0]==revision and json.loads(old[1]).get('body')==body)):return False
+        if old:
+            previous=json.loads(old[1])
+            archive(c,previous) # Seed history for pre-existing records without rewriting them.
+            if old[0]>revision:return False
+            if old[0]==revision and (fingerprint(previous)==fingerprint(payload) or (previous.get('body') and body is None)):return False
         result=c.execute('INSERT INTO bithumb_notices VALUES (?,?,?) ON CONFLICT(url) DO UPDATE SET revision=excluded.revision,payload=excluded.payload WHERE excluded.revision >= bithumb_notices.revision',(url,revision,json.dumps(payload,ensure_ascii=False)))
+        if result.rowcount:archive(c,payload)
     return result.rowcount==1
+
+
+def versions(notice_id):
+    if not str(notice_id).isdigit():raise ValueError('Invalid notice id')
+    url='https://feed.bithumb.com/notice/'+str(notice_id)
+    with connect() as c:
+        rows=c.execute('SELECT payload,fingerprint FROM bithumb_notice_versions WHERE url=? ORDER BY revision DESC,fingerprint',(url,)).fetchall()
+    return [{**json.loads(payload),'fingerprint':digest} for payload,digest in rows]
+
 
 def records():
     with connect() as c:rows=c.execute('SELECT payload FROM bithumb_notices ORDER BY revision DESC').fetchall()
@@ -43,7 +72,7 @@ def documents(symbol):
     for e in records():
         body=e.get('body')
         if not body or not re.search(r'(?<![A-Z0-9])'+re.escape(symbol)+r'(?![A-Z0-9])',e['title']+' '+body,re.I):continue
-        result.append(dict(id='bithumb-'+urlparse(e['pc_url']).path.rsplit('/',1)[1],title=e['title'],body=body,source=e['pc_url'],source_type='빗썸 공지 원문 (업비트 상태 아님)',exchange='Bithumb',verified=True,symbols=[symbol],published_at=e['published_at'],updated_at=e.get('modified_at',''),revision=e.get('modified_at') or e['published_at'],collected_at=e['received_at'],own=False))
+        result.append(dict(id='bithumb-'+urlparse(e['pc_url']).path.rsplit('/',1)[1],title=e['title'],body=body,source=e['pc_url'],source_type='빗썸 공지 원문 (업비트 상태 아님)',exchange='Bithumb',verified=True,symbols=[symbol],published_at=e['published_at'],updated_at=e.get('modified_at',''),revision=e.get('modified_at') or e['published_at'],fingerprint=fingerprint(e),collected_at=e['received_at'],own=False))
     return result
 
 def extract_body(html):

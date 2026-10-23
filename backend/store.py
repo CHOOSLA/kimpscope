@@ -41,7 +41,7 @@ def index_documents(item,docs):
             if old['metadatas'] and all(m.get('fingerprint')==fingerprint for m in old['metadatas']):continue
             chunks=splitter.split_text(d['body']) or [d['title']]
             ids=[group+':'+str(i) for i in range(len(chunks))]
-            metas=[dict(item_id=item['id'],group=group,fingerprint=fingerprint,title=d['title'],source=d['source'],source_type=d['source_type'],own=bool(d.get('own')),chunk_index=i) for i in range(len(chunks))]
+            metas=[dict(item_id=item['id'],group=group,fingerprint=fingerprint,title=d['title'],source=d['source'],source_type=d['source_type'],own=bool(d.get('own')),chunk_index=i,source_fingerprint=str(d.get('fingerprint','')),**{key:str(d[key]) for key in ('exchange','revision','published_at','updated_at','collected_at') if key in d}) for i in range(len(chunks))]
             col.upsert(ids=ids,documents=chunks,metadatas=metas,embeddings=embed(chunks))
             obsolete=list(set(old['ids'])-set(ids))
             if obsolete:col.delete(ids=obsolete)

@@ -22,6 +22,11 @@ app=FastAPI(title='KimpScope Research API',lifespan=lifespan)
 @app.get('/api/notices/status')
 def notice_status():return {'upbit':notices.health,'bithumb':bithumb_notices.sync_status(),'history_complete':False,'indexing':'on_query','storage':notice_storage_mode()}
 
+@app.get('/api/notices/bithumb/{notice_id}/versions')
+def notice_versions(notice_id:str):
+    if not notice_id.isascii() or not notice_id.isdigit():raise HTTPException(400,'유효하지 않은 공지 ID입니다.')
+    return {'versions':bithumb_notices.versions(notice_id),'history_complete':False}
+
 state={'state':'idle','message':'색인 준비 전'};guard=threading.Lock()
 class Query(BaseModel):
     symbol:str=Field(min_length=1,max_length=30)
