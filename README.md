@@ -28,8 +28,9 @@
 ```
                  ┌──────────────── 데이터 준비 ────────────────┐
 업비트 마켓 목록 ─▶ 항목 텍스트 298건 ─▶ 임베딩 ─▶ Chroma "items"
-빗썸 공지(+본문) ─▶ Postgres(Neon) 보관·개정 이력 ─┐
-                                                    │ 질문 시 후보
+빗썸 공지 21건(+본문) ─▶ Postgres(Neon) 보관·개정 이력 ─┐
+공식 문서 4건(업비트 API 문서·bitcoin.org·ethereum.org) ─▶ Postgres ─┤ 질문 시 후보
+                                                                      │
 질문 ─▶ [프롬프트 1] 검색어 추출 ─▶ 후보 ─▶ [프롬프트 2] 선별 ─▶ 청킹·임베딩 ─▶ Chroma "documents"
                                      (질문 캐시: 같은 질문은 다시 수집하지 않음)
 
@@ -48,7 +49,7 @@ LangGraph:  retrieve ───────────────────�
 | `backend/pipeline.py`, `prompts.py` | LangGraph 두 노드, 프롬프트 3, 인용 검사 |
 | `backend/live.py` | 실시간 근거 생성, 현재 값 질문 분류 |
 | `backend/market.py`, `fx.py` | 시세·김프·환율 |
-| `backend/bithumb_notices.py`, `exchange_status.py`, `notice_db.py` | 공지·상태 수집과 저장 |
+| `backend/bithumb_notices.py`, `official_docs.py`, `exchange_status.py`, `notice_db.py` | 공지·공식 문서·거래소 상태 수집과 저장 |
 | `backend/main.py` | API |
 | `dist/` | 화면 (HTML·CSS·JS, F2013) |
 | `scripts/cron_collect.py` | 15분 예약 수집 진입점 (GitHub Actions) |
@@ -58,9 +59,10 @@ LangGraph:  retrieve ───────────────────�
 - **두 컬렉션.** `items`(코인 메타데이터)와 `documents`(외부 문서). 청크 ID는 `항목ID:문서ID:청크순번`이라 같은 공지가 여러 코인에 연결돼도 덮어쓰지 않습니다.
 - **재색인 중복 방지.** 메타데이터는 고정 ID로 upsert. 외부 문서는 본문·청크 설정의 지문(SHA-256)이 같으면 건너뛰고, 바뀌면 이전 청크를 지운 뒤 다시 넣습니다. 청크 크기를 바꾸면 지문이 달라져 자동으로 다시 청킹됩니다.
 - **항목 자체 문서 우선.** 프롬프트 2가 무엇을 고르든 선택 코인의 메타데이터 문서는 항상 색인·검색 결과 1번에 들어갑니다.
-- **청크 설정.** `CHUNK_SIZE=800`, `CHUNK_OVERLAP=120`, `TOP_K=5` (환경변수로 변경). 빗썸 공지 본문은 대부분 수백~2천 자라 800자면 공지 1건이 1~3개 청크로 나뉘고, 중복 120자로 문단 경계의 "재개 일시" 같은 문장이 잘리지 않게 했습니다.
+- **청크 설정.** `CHUNK_SIZE=800`, `CHUNK_OVERLAP=120`, `TOP_K=5` (환경변수로 변경). 빗썸 공지 본문은 371~5,523자(21건 실측)입니다. 800자 기준이면 짧은 공지는 1개, SOL 입출금 중지 공지는 5개 청크가 됩니다. 중복 120자(15%)는 "중지 시점 · 재개 시점"처럼 문단 경계에 걸친 문장이 양쪽 청크에 함께 남게 하는 여유입니다. 400/60으로 줄이면 같은 문서가 2배 넘게 잘게 나뉩니다(체크리스트 5번).
 - **해외 가격.** 바이낸스 USDT 현물을 쓰고, 거래가 멈춘(BREAK) 심볼은 뺍니다. 거래가 멈춘 심볼에도 마지막 가격이 남아 있어 김프가 수천 %로 나오기 때문입니다(실측 DATA +16,826%). 바이낸스가 응답하지 않으면 OKX → Gate → Bybit 순으로 대체하고, 사용한 출처를 화면과 근거에 표시합니다. 운영 서버 IP가 바이낸스에서 418(IP 차단)을 받은 실제 장애에서 나온 구조입니다.
 - **김프는 공식 환율 기준.** 업비트 USDT/KRW를 환율로 쓰면 테더 가격에 붙은 국내 프리미엄이 김프를 상쇄합니다(실측 BTC −0.01%). 수출입은행 매매기준율(키 필요) → Frankfurter 공개 기준환율 순으로 받고, 둘 다 실패하면 김프를 비워 둡니다. 고정 환율로 대체하지 않습니다.
+- **서버에서 막힌 원문.** 빗썸 공지 본문 페이지는 Render 서버 요청에 403을 돌려줍니다. User-Agent를 브라우저로 위장해 우회하지 않고, 관리자가 브라우저로 받은 원본 HTML을 토큰이 있는 경로(`/api/admin/relay`)로 넘기면 서버가 같은 추출기로 본문을 뽑습니다. 이미 공식 목록 API로 받은 공지만 대상이며, 넘겨받은 본문에는 `body_via: browser_relay`가 붙습니다.
 - **현재 값 질문은 두 번 막습니다.** 생성 전: 최신 실시간 근거가 없으면 모델을 부르지 않음. 생성 후: 답변이 그 근거를 인용하지 않으면 폐기(`live_citation_missing`). 문서 속 API 예시 가격을 현재가로 답한 실제 오류(2026-10-22)에서 나온 규칙입니다.
 
 자세한 기록: [김프 계산과 실시간 근거](docs/LIVE_EVIDENCE.md) · [공지 수집 파이프라인](docs/NOTICE_PIPELINE.md) · [저장소 선택](docs/FREE_STORAGE_PLAN.md)
@@ -95,20 +97,49 @@ macOS/Linux: `python3.12 -m venv .venv && .venv/bin/pip install -r requirements.
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest -q          # 외부 호출 없음
-.\.venv\Scripts\python.exe -m scripts.checklist_local   # F2001·F2002·F2005·F2007 (임베딩 스텁)
+.\.venv\Scripts\python.exe -m scripts.checklist_local   # F2001·F2002·F2005·F2007·F2012 (임베딩 스텁)
 node scripts/checklist_api.mjs https://kimpscope.onrender.com   # 운영 API로 나머지 항목 (모델 호출 발생)
 ```
 
-체크리스트 27개 항목의 결과와 증빙: [docs/checklist/RESULTS.md](docs/checklist/RESULTS.md)
+### 2026-10-23 셀프 점검 결과 — 통과 26 · 실패 1 / 27
 
-## 6. 데이터 출처와 이용 조건
+운영 서버에서 직접 실행한 값입니다. 항목별 증빙(실행 결과 JSON, 화면 캡처 10장)은 [docs/checklist/RESULTS.md](docs/checklist/RESULTS.md)에 있습니다.
+
+| 확인한 것 | 결과 |
+| --- | --- |
+| 메타데이터 로드 = 색인, 재색인 | 298 = 298, 재실행 후 298 |
+| 검색어·선별 (SOL 질문) | 검색어 6개, 색인 2건 / 제외 2건 |
+| 같은 질문 재실행 | 수집 캐시 사용, 23.3초 → 13.8초, 청크 수 유지 |
+| 청크 설정 800 / 400 / 1200 | 청크 7 / 15 / 5 |
+| Top-k 3 / 8, 유사도 / MMR | 문서 청크 2 / 5, MMR이 4위 청크를 다른 청크로 교체 |
+| 문서에 없는 질문 | "제공된 근거에 없습니다" |
+| 현재 김프 질문 | 기준 시각과 +0.87%를 실시간 스냅샷 인용으로 답함 |
+| 투자 판단 질문 | 보류, 화면에 "인용 문서 없음" 표시 |
+| 자동 테스트 | 67개 통과 ([테스트 결과표](docs/TEST_RESULTS.md)) |
+
+실패 1건은 27번(요구사항 정의서·RAG 파이프라인 설계문서 별도 문서 없음)입니다. 점검 중 발견해 고친 문제 5건은 RESULTS.md 끝에 있습니다.
+
+## 6. 문서 목록
+
+| 문서 | 내용 |
+| --- | --- |
+| [docs/checklist/RESULTS.md](docs/checklist/RESULTS.md) | 셀프 체크리스트 27개 항목 결과·증빙 (엑셀 기입본과 원본도 같은 폴더) |
+| [docs/TEST_RESULTS.md](docs/TEST_RESULTS.md) | 자동 테스트 결과표와 요구사항 대응 |
+| [docs/RAG_COMPARISON.md](docs/RAG_COMPARISON.md) | RAG 전후 답변 비교 (F2015) |
+| [docs/LIVE_EVIDENCE.md](docs/LIVE_EVIDENCE.md) | 김프 계산 기준, 실시간 근거 규칙, 배포 후 발견한 장애와 조치 |
+| [docs/SOURCES.md](docs/SOURCES.md) | 데이터 출처·호출 정책·이용 조건 |
+| [docs/NOTICE_PIPELINE.md](docs/NOTICE_PIPELINE.md) | 공지 수집·개정 이력 설계 |
+
+## 7. 데이터 출처와 이용 조건
 
 [docs/SOURCES.md](docs/SOURCES.md)에 출처별 주소·키 필요 여부·호출 정책·이용 조건을 정리했습니다. 확인하지 못한 조건은 미확인으로 적었습니다. 이 저장소는 교육용 시연 범위로 운영합니다.
 
-## 7. 한계
+## 8. 한계
 
 - 입출금 상태와 공지는 **빗썸 기준**입니다. 업비트 입출금 현황·공지는 API 키가 필요해 수집하지 못했고, 답변에 "빗썸 기준"을 밝힙니다.
 - 원/달러는 고시 환율이라 고시 이후 환율 변동분이 김프에 섞입니다. 화면과 근거에 고시일을 표시합니다.
 - 현재 값 질문 분류는 정규식입니다. 우회 표현을 모두 잡지는 못하고, 생성 후 인용 판정이 두 번째 방어선입니다.
 - 빗썸 공지 API는 최근 20건만 줍니다. 예약 수집이 시작된 이후의 공지만 쌓입니다.
+- 새 빗썸 공지는 서버가 본문을 받지 못합니다(403). 관리자 브라우저 경유가 다시 필요합니다.
+- 15분 예약 수집(GitHub Actions)이 아직 기록을 남기지 않았습니다. 그 전까지 입출금·경보 상태 질문은 근거 없음으로 거절됩니다.
 - Render 무료 플랜은 디스크가 재배포마다 비워집니다. Chroma 색인은 시작할 때 다시 만들고, 공지·상태는 외부 PostgreSQL에 둡니다.

@@ -15,6 +15,15 @@ OUT = DIR / '2회차_셀프·상호_체크리스트_셀프점검.xlsx'
 ALLOWED = {'통과', '실패', '미확인', '해당없음'}
 
 
+def link(e):
+    """증빙 이름 → RESULTS.md 기준 상대 링크. evidence/ 안에 있으면 그쪽, 아니면 저장소 루트 기준."""
+    if e == 'RESULTS.md':return '이 문서'
+    if (DIR / 'evidence' / e).exists():return f'[{e}](evidence/{e})'
+    if (DIR / e).exists():return f'[{e}]({e})'
+    if (ROOT / e).exists():return f'[{e}](../../{e})'
+    raise SystemExit(f'증빙 파일 없음: {e}')
+
+
 def main():
     data = json.loads((DIR / 'results.json').read_text(encoding='utf-8'))
     items = data['items']
@@ -43,14 +52,14 @@ def main():
         f"집계 — 통과 {count['통과']} · 실패 {count['실패']} · 미확인 {count['미확인']} · 해당없음 {count['해당없음']} / 전체 27",
         '',
         '기입 기준은 양식 그대로입니다. 직접 실행해 기대한 결과를 확인한 것만 통과로 적었습니다.',
-        '증빙은 `evidence/` 폴더의 실행 결과 파일입니다. 화면 캡처가 필요한 항목은 비고에 적었습니다.',
+        '증빙은 `evidence/` 폴더에 있습니다. 화면 캡처는 `evidence/screenshots/`, 실행 결과는 `api_run.json`(운영 API)·`local_index.json`(로컬)입니다. 엑셀 기입본은 `2회차_셀프·상호_체크리스트_셀프점검.xlsx`입니다.',
         '',
         '| 번호 | 요구사항 | 확인 항목 | 결과 | 증빙 | 비고 |',
         '| --- | --- | --- | --- | --- | --- |',
     ]
     for x in items:
         row = 8 + x['no']
-        ev = '<br>'.join(f'[{e}](evidence/{e.split("#")[0]})' if not e.startswith('tests/') and not e.startswith('scripts/') and not e.startswith('backend/') else f'`{e}`' for e in x.get('evidence', []))
+        ev = '<br>'.join(link(e) for e in x.get('evidence', []))
         cells = [str(x['no']), ws.cell(row, 4).value, ws.cell(row, 5).value, f"**{x['result']}**", ev, x.get('note', '')]
         lines.append('| ' + ' | '.join(str(c).replace('|', '\\|').replace('\n', ' ') for c in cells) + ' |')
     if data.get('sections'):

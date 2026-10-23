@@ -1,6 +1,6 @@
 # 자동 테스트 결과표
 
-실행: `python -m pytest -q` → **60 passed** (2026-10-23, Python 3.13, 외부 네트워크·모델 호출 없음)
+실행: `python -m pytest -q` → **67 passed** (2026-10-23, Python 3.13, 외부 네트워크·모델 호출 없음)
 
 테스트는 실측 응답과 같은 모양의 모의 데이터를 씁니다. 운영 환경에서 직접 실행한 결과는 [체크리스트 결과](checklist/RESULTS.md)에 따로 있습니다.
 
@@ -10,10 +10,12 @@
 | | `test_own_document_unconditional` | 선별과 무관하게 항목 자체 문서 포함 | F2003·F2004 |
 | | `test_filter_excludes_nonmatching` / `test_unsupported_filter_abstains` | 조건 탐색이 조건과 다른 항목을 섞지 않음, 지원하지 않는 조건은 거절 | F2011 |
 | | `test_unknown_item` / `test_limits` | 없는 항목 404, 범위 밖 Top-k 422 | NF2004 |
+| | `test_llm_condition_name_in_symbol_is_normalized` | 모델이 symbol에 코인 이름을 넣어도 티커로 바꿔 조건 탐색 (운영 실측 0건 회귀) | F2011 |
 | `test_collection_report.py` | `test_selection_reports_kept_and_discarded` | 프롬프트 1 검색어, 프롬프트 2 선별·제외 목록, 재질문 시 프롬프트 재호출 없음 | F2003·F2004·NF2002 |
 | `test_encoding.py` | `test_korean_source_and_cache_round_trip` | 한글 원문·질문 캐시가 Windows에서도 깨지지 않음 | F2004 |
 | `test_notices.py` | 5개 | 업비트 공지: 중복·순서 역전 수신, 비공식 출처 거부, 미검증 문서 팩 제외, 개정 시 질문 캐시 무효화 | F2004·F2005·NF2007 |
 | `test_bithumb_notices.py` | 11개 | 빗썸 공지: 개정 이력 보존, 최신 개정만 색인, 본문 없는 공지 제외·재시도, 리다이렉트·외부 도메인 거부, 동시 갱신, 본문 실패 사유 기록 | F2004·F2005·NF2006 |
+| `test_relay.py` | 6개 | 관리자 브라우저 경유 원문: 토큰 없거나 틀리면 404, 목록에 있는 빗썸 공지만·본문 구조가 맞을 때만 저장, 공식 문서 허용 목록, 서버 수집 403 사유 기록 | F2004·NF2003·NF2006 |
 | `test_live_query_boundary.py` | 4개 | 문서 속 API 예시 가격으로 현재가를 답하지 않음 | F2007·F2008 |
 | `test_kimp_live.py` 환율 | 3개 | 수출입은행 휴일 역추적·쉼표 파싱, 키 없을 때 Frankfurter, 모두 실패해도 고정 환율을 쓰지 않음 | F2010 |
 | `test_kimp_live.py` 시세 | 6개 | 공식 환율 기준 김프, 거래 중단(BREAK) 심볼 제외, 환율 없으면 김프 보류, 지연 시 원인 표시, 바이낸스 차단 시 OKX 대체·소스별 실패 사유 | F2010·NF2006 |
