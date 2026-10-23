@@ -24,8 +24,8 @@ def save(meta,body):
     with connect() as c:
         old=c.execute('SELECT revision,payload FROM bithumb_notices WHERE url=?',(url,)).fetchone()
         if old and (old[0]>revision or (old[0]==revision and json.loads(old[1]).get('body')==body)):return False
-        c.execute('INSERT INTO bithumb_notices VALUES (?,?,?) ON CONFLICT(url) DO UPDATE SET revision=excluded.revision,payload=excluded.payload',(url,revision,json.dumps(payload,ensure_ascii=False)))
-    return True
+        result=c.execute('INSERT INTO bithumb_notices VALUES (?,?,?) ON CONFLICT(url) DO UPDATE SET revision=excluded.revision,payload=excluded.payload WHERE excluded.revision >= bithumb_notices.revision',(url,revision,json.dumps(payload,ensure_ascii=False)))
+    return result.rowcount==1
 
 def records():
     with connect() as c:rows=c.execute('SELECT payload FROM bithumb_notices ORDER BY revision DESC').fetchall()

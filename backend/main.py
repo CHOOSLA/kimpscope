@@ -10,6 +10,7 @@ from .pipeline import graph
 from .llm import available,structured,Conditions
 from contextlib import asynccontextmanager
 from . import notices,bithumb_notices
+from .notice_db import mode as notice_storage_mode
 @asynccontextmanager
 async def lifespan(app):
     stop=notices.start()
@@ -19,7 +20,7 @@ async def lifespan(app):
     bithumb_stop.set()
 app=FastAPI(title='KimpScope Research API',lifespan=lifespan)
 @app.get('/api/notices/status')
-def notice_status():return {'upbit':notices.health,'bithumb':bithumb_notices.sync_status(),'history_complete':False,'indexing':'on_query'}
+def notice_status():return {'upbit':notices.health,'bithumb':bithumb_notices.sync_status(),'history_complete':False,'indexing':'on_query','storage':notice_storage_mode()}
 
 state={'state':'idle','message':'색인 준비 전'};guard=threading.Lock()
 class Query(BaseModel):

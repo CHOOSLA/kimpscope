@@ -7,9 +7,9 @@ DB=Path(os.getenv('NOTICE_DB_PATH',str(DATA/'notices.sqlite3')))
 health={'state':'disabled','last_received_at':None,'error':None}
 
 def connect():
-    DB.parent.mkdir(parents=True,exist_ok=True)
-    c=sqlite3.connect(DB,timeout=15)
-    c.execute('CREATE TABLE IF NOT EXISTS notices (id TEXT PRIMARY KEY, timestamp INTEGER NOT NULL, payload TEXT NOT NULL)')
+    from .notice_db import connect as storage_connect
+    c=storage_connect(DB)
+    c.execute('CREATE TABLE IF NOT EXISTS notices (id TEXT PRIMARY KEY, timestamp BIGINT NOT NULL, payload TEXT NOT NULL)')
     return c
 
 def accept(event):
