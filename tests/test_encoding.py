@@ -7,7 +7,7 @@ from backend.catalog import get_item
 def test_korean_source_and_cache_round_trip(tmp_path, monkeypatch):
     (tmp_path / 'documents.json').write_text(json.dumps([
         {'id': 'ko-guide', 'title': '전송 확인', 'body': '주소와 수수료를 확인하세요.',
-         'source': 'https://example.com/guide', 'source_type': '테스트', 'symbols': ['BTC']}
+         'source': 'https://example.com/guide', 'source_type': '테스트', 'verified': True, 'symbols': ['BTC']}
     ], ensure_ascii=False), encoding='utf-8')
     monkeypatch.setattr(source_collection, 'DATA', tmp_path)
     monkeypatch.setattr(source_collection, 'CACHE', tmp_path / 'query-cache.json')

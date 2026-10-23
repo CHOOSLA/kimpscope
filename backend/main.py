@@ -8,7 +8,19 @@ from .store import collection,index_metadata
 from .collection import candidates
 from .pipeline import graph
 from .llm import available,structured,Conditions
-app=FastAPI(title='KimpScope Research API')
+from contextlib import asynccontextmanager
+from . import notices,bithumb_notices
+@asynccontextmanager
+async def lifespan(app):
+    stop=notices.start()
+    bithumb_stop=bithumb_notices.start()
+    yield
+    stop.set()
+    bithumb_stop.set()
+app=FastAPI(title='KimpScope Research API',lifespan=lifespan)
+@app.get('/api/notices/status')
+def notice_status():return {'upbit':notices.health,'bithumb':bithumb_notices.health,'history_complete':False,'indexing':'on_query'}
+
 state={'state':'idle','message':'색인 준비 전'};guard=threading.Lock()
 class Query(BaseModel):
     symbol:str=Field(min_length=1,max_length=30)

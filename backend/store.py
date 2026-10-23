@@ -31,8 +31,12 @@ def index_documents(item,docs):
     splitter=RecursiveCharacterTextSplitter(chunk_size=CHUNK_SIZE,chunk_overlap=CHUNK_OVERLAP)
     with lock, FileLock(DB_PATH+'.index.lock'):
         col=collection('documents')
+        valid={item['id']+':'+d['id'] for d in docs}
+        previous=col.get(where={'item_id':item['id']})
+        obsolete=[i for i,m in zip(previous['ids'],previous['metadatas']) if m.get('group') not in valid]
+        if obsolete:col.delete(ids=obsolete)
         for d in docs:
-            group=item['id']+':'+d['id'];fingerprint=hashlib.sha256((d['body']+str(CHUNK_SIZE)+str(CHUNK_OVERLAP)).encode()).hexdigest()
+            group=item['id']+':'+d['id'];fingerprint=hashlib.sha256((str(d)+str(CHUNK_SIZE)+str(CHUNK_OVERLAP)).encode()).hexdigest()
             old=col.get(where={'group':group})
             if old['metadatas'] and all(m.get('fingerprint')==fingerprint for m in old['metadatas']):continue
             chunks=splitter.split_text(d['body']) or [d['title']]

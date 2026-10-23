@@ -11,7 +11,9 @@ lock=threading.RLock()
 def candidates(item):
     own=dict(id='own-'+item['id'],title=item['name']+' 거래소 메타데이터',body=item_text(item),source=item['source'],source_type='거래소 메타데이터',own=True)
     pack=json.loads((DATA/'documents.json').read_text(encoding="utf-8")) if (DATA/'documents.json').exists() else []
-    return [own]+[d for d in pack if not d.get('symbols') or item['symbol'] in d['symbols']]
+    from .notices import documents
+    from .bithumb_notices import documents as bithumb_documents
+    return [own]+[d for d in pack if d.get('verified') is True and (not d.get('symbols') or item['symbol'] in d['symbols'])]+documents(item['symbol'])+bithumb_documents(item['symbol'])
 
 def collect(item,question):
     docs=candidates(item)

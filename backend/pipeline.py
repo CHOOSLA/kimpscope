@@ -17,8 +17,12 @@ class State(TypedDict,total=False):
     status:str
 
 def retrieve_node(s):
-    gathered=collect(s['item'],s['question']);index_documents(s['item'],gathered['documents'])
-    return {'evidence':retrieve(s['item'],s['question'],s['k'],s['mode']),'cache_hit':gathered['cache_hit']}
+    # Serialize reconciliation and retrieval so another query cannot replace the corpus midway.
+    from .store import lock
+    with lock:
+        gathered=collect(s['item'],s['question']);index_documents(s['item'],gathered['documents'])
+        return {'evidence':retrieve(s['item'],s['question'],s['k'],s['mode']),'cache_hit':gathered['cache_hit']}
+
 
 def requires_live_data(question):
     # API documentation examples are never a source of live quotes or wallet status.
