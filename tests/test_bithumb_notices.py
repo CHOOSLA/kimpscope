@@ -109,3 +109,21 @@ def test_index_uses_latest_revision_only(meta,tmp_path,monkeypatch):
     assert found['documents']==['BTC new body']
     assert found['metadatas'][0]['source_fingerprint']==current[0]['fingerprint']
     assert len(b.versions('123'))==2
+
+def test_body_failure_reason_is_recorded(meta):
+    # 운영(2026-10-23): 공지 21건 모두 본문이 비어 있었지만 이유가 어디에도 남지 않았다
+    class Listing:
+        status_code=200
+        def raise_for_status(self):pass
+        def json(self):return [meta]
+    class Blocked:
+        status_code=302
+        content=b''
+        def raise_for_status(self):pass
+    class Session:
+        headers={}
+        def get(self,url,**kwargs):return Listing() if 'api.bithumb' in url else Blocked()
+    b.sync_once(session=Session(),wait=lambda _:None)
+    st=b.sync_status()
+    assert st['body_failures']==1 and st['body_failure_last']=='HTTP 302'
+    assert not b.documents('ONT')

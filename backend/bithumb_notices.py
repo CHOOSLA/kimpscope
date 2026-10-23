@@ -90,7 +90,7 @@ def sync_once(count=20,session=None,wait=time.sleep):
         health.update(state='polling',error=None)
         r=session.get('https://api.bithumb.com/v1/notices',params={'count':count},timeout=15);r.raise_for_status();rows=r.json()
         if not isinstance(rows,list):raise ValueError('Invalid notice list')
-        previous={e['pc_url']:e for e in records()};changed=0
+        previous={e['pc_url']:e for e in records()};changed=0;failures=[]
         for meta in rows:
             url=meta.get('pc_url','')
             if not valid_url(url):continue
@@ -100,11 +100,17 @@ def sync_once(count=20,session=None,wait=time.sleep):
             body=None
             try:
                 page=session.get(url,timeout=15,allow_redirects=False);page.raise_for_status()
-                if page.status_code==200:body=extract_body(page.content)
-            except requests.RequestException:pass
+                if page.status_code!=200:failures.append(f'HTTP {page.status_code}')
+                else:
+                    body=extract_body(page.content)
+                    if body is None:failures.append(f'본문 구조 없음 ({len(page.content)}B)')
+            except requests.RequestException as e:
+                failures.append(f"HTTP {getattr(e.response,'status_code',None) or type(e).__name__}")
             changed+=save(meta,body)
         urls={e.get('pc_url') for e in rows}
-        coverage={'possible_gap':bool(previous and urls and not urls.intersection(previous)),'last_successful_poll_at':int(time.time()*1000),'oldest_visible_published_at':min((e.get('published_at','') for e in rows),default=None)}
+        coverage={'possible_gap':bool(previous and urls and not urls.intersection(previous)),'last_successful_poll_at':int(time.time()*1000),'oldest_visible_published_at':min((e.get('published_at','') for e in rows),default=None),
+                  # 본문을 못 받은 이유를 남긴다(운영에서 본문 21건이 모두 비어 있었는데 원인이 기록되지 않았다)
+                  'body_failures':len(failures),'body_failure_last':failures[-1] if failures else None}
         with connect() as c:c.execute('INSERT INTO notice_sync_state VALUES (?,?) ON CONFLICT(key) DO UPDATE SET payload=excluded.payload',('bithumb',json.dumps(coverage)))
         health.update(state='ready',last_poll_at=coverage['last_successful_poll_at'],changed=changed)
         return changed
