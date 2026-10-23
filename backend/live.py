@@ -30,7 +30,7 @@ def market_evidence(item,quote=None,now_ms=None):
     now_ms=now_ms or int(time.time()*1000)
     stale=bool(q.get('stale')) or not q.get('received_at') or now_ms-q['received_at']>MARKET_MAX_AGE_S*1000
     parts=[f"{item['name']}({item['symbol']}) 시세 스냅샷, 기준 시각 {_kst(q.get('received_at'))}.",
-           f"업비트 원화가 {_won(q['domestic'])}, 바이낸스 {q['foreign']:g} USDT."]
+           f"업비트 원화가 {_won(q['domestic'])}, {q.get('foreign_source') or '해외'} {q['foreign']:g} USDT."]
     if q.get('premium') is not None:
         parts.append(f"원/달러 {q['fx']:,.2f}원({q['fx_source']}, 고시일 {q['fx_date']}) 기준 김치 프리미엄 {q['premium']:+.2f}%.")
     else:
@@ -40,8 +40,8 @@ def market_evidence(item,quote=None,now_ms=None):
     parts.append('거래소 체결가이며 거래소마다 수신 시각이 다를 수 있다. 수수료·전송 시간은 반영하지 않았다.')
     if stale:parts.append('주의: 이 스냅샷은 최신이 아니다(갱신 실패 또는 지연). 현재 값으로 쓰지 않는다.')
     return dict(id='live-market-'+item['symbol'],title=item['name']+' 실시간 시세·김프',text=' '.join(parts),
-                source='업비트 /v1/ticker/all · 바이낸스 /api/v3/ticker/price · '+(q.get('fx_source') or '환율 미확보'),
-                source_type='실시간 시세 스냅샷',exchange='Upbit/Binance',revision=_kst(q.get('received_at')),
+                source='업비트 /v1/ticker/all · '+(q.get('foreign_source') or '해외')+' USDT 현물 · '+(q.get('fx_source') or '환율 미확보'),
+                source_type='실시간 시세 스냅샷',exchange='Upbit/'+(q.get('foreign_source') or '해외'),revision=_kst(q.get('received_at')),
                 published_at=_kst(q.get('received_at')),live='market',stale=stale,score=1.0)
 
 def state_evidence(item,state=None):
