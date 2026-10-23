@@ -16,6 +16,7 @@ class State(TypedDict,total=False):
     citations:list
     cache_hit:bool
     status:str
+    collection:dict
 
 def retrieve_node(s):
     # Serialize reconciliation and retrieval so another query cannot replace the corpus midway.
@@ -25,7 +26,10 @@ def retrieve_node(s):
         evidence=retrieve(s['item'],s['question'],s['k'],s['mode'])
     # 실시간 근거는 색인하지 않는다. 검색되는 순간 지난 값이 되기 때문이다. 질문마다 새로 만들어 메타데이터 다음에 둔다.
     evidence=evidence[:1]+live.evidence(s['item'])+evidence[1:]
-    return {'evidence':evidence,'cache_hit':gathered['cache_hit']}
+    report={'keywords':gathered['keywords'],'selection_mode':gathered.get('selection_mode'),
+            'selected':[{'id':d['id'],'title':d['title'],'source_type':d['source_type']} for d in gathered['documents']],
+            'discarded':gathered.get('discarded',[])}
+    return {'evidence':evidence,'cache_hit':gathered['cache_hit'],'collection':report}
 
 
 def requires_live_data(question):
