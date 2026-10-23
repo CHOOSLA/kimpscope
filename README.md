@@ -29,13 +29,17 @@ macOS/Linux에서는 Python 가상환경 생성 및 requirements.txt 설치 후 
 
 - `dist/`: 시세표, 검색·필터, 관심 코인, 코인별 대화·인용 문서 UI
 - `backend/main.py`: API와 정적 화면을 같은 포트에서 제공
-- `backend/market.py`: 업비트·Binance REST 시세 조회, 5초 캐시 및 요청 직렬화. WebSocket 스트리밍은 아직 아닙니다.
+- `backend/market.py`: 업비트·Binance REST 시세 조회, 5초 캐시 및 요청 직렬화. 대상은 업비트 KRW ∩ 바이낸스 거래 중(TRADING) 코인이며 화면에는 대표 10개를 보낸다. WebSocket 스트리밍은 아직 아닙니다.
+- `backend/fx.py`: 김프 기준 원/달러 환율 (수출입은행 키가 있으면 매매기준율, 없으면 Frankfurter 공개 기준환율)
+- `backend/exchange_status.py`: 빗썸 입출금 현황·경보, 업비트 유의/주의 수집 (상태 변화만 기록)
+- `backend/live.py`: 시세·김프·거래소 상태를 기준 시각이 붙은 RAG 근거로 생성, 현재 값 질문 분류
+- `scripts/cron_collect.py`: Render 크론 15분 주기 수집 (`requirements-cron.txt`만 사용)
 - `backend/store.py`: Chroma의 항목/문서 컬렉션, OpenAI 호환 임베딩, 코인 범위 검색 및 MMR 선택
 - `backend/pipeline.py`: LangGraph retrieve → generate, 번호 인용 검사
 - `backend/collection.py`: 저장된 공식 문서 팩에서 후보 선택, 질문 캐시 및 문서 버전 해시
 - `data/markets.json`, `data/documents.json`: 수집 시점 스냅샷. 최신 공지 실시간 수집기가 아닙니다.
 
-국내외 환산에는 업비트 USDT/KRW 체결가를 사용하며 USD 환율과 다릅니다. 과거 차트는 업비트 캔들 종가이며 김치 프리미엄 이력이 아닙니다. 데이터 이용 조건과 출처는 [SOURCES.md](docs/SOURCES.md)를 확인하세요.
+김치 프리미엄은 원/달러 기준 환율로 계산합니다. 업비트 USDT/KRW 기준 차이와 테더 프리미엄은 따로 표시합니다. 환율을 받지 못하면 김프를 표시하지 않습니다. 자세한 기준과 실시간 근거 규칙은 [LIVE_EVIDENCE.md](docs/LIVE_EVIDENCE.md)를 확인하세요. 과거 차트는 업비트 캔들 종가이며 김치 프리미엄 이력이 아닙니다. 데이터 이용 조건과 출처는 [SOURCES.md](docs/SOURCES.md)를 확인하세요.
 
 ## 검증
 

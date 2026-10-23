@@ -50,7 +50,7 @@ def index_documents(item,docs):
 def retrieve(item,question,k=5,mode='similarity'):
     base=collection('items').get(ids=[item['id']])
     if not base['ids']:raise ValueError('NO_INDEX')
-    result=[dict(id=item['id'],text=base['documents'][0],title=item['name']+' 메タ데이터',source=item['source'],source_type='항목 메타데이터',score=1.0)]
+    result=[dict(id=item['id'],text=base['documents'][0],title=item['name']+' 메타데이터',source=item['source'],source_type='항목 메타데이터',score=1.0)]
     col=collection('documents')
     total=len(col.get(where={'item_id':item['id']})['ids'])
     if total:

@@ -9,7 +9,7 @@ from .collection import candidates
 from .pipeline import graph
 from .llm import available,structured,Conditions
 from contextlib import asynccontextmanager
-from . import notices,bithumb_notices
+from . import notices,bithumb_notices,exchange_status
 from .notice_db import mode as notice_storage_mode
 @asynccontextmanager
 async def lifespan(app):
@@ -20,7 +20,7 @@ async def lifespan(app):
     bithumb_stop.set()
 app=FastAPI(title='KimpScope Research API',lifespan=lifespan)
 @app.get('/api/notices/status')
-def notice_status():return {'upbit':notices.health,'bithumb':bithumb_notices.sync_status(),'history_complete':False,'indexing':'on_query','storage':notice_storage_mode()}
+def notice_status():return {'upbit':notices.health,'bithumb':bithumb_notices.sync_status(),'exchange_status':exchange_status.sync_summary(),'history_complete':False,'indexing':'on_query','storage':notice_storage_mode()}
 
 @app.get('/api/notices/bithumb/{notice_id}/versions')
 def notice_versions(notice_id:str):

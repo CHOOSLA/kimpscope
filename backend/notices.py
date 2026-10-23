@@ -34,10 +34,10 @@ def documents(symbol):
 
 def token():
     enc=lambda x:base64.urlsafe_b64encode(x).rstrip(b'=')
-    head=enc(b'{"alg":"HS256","typ":"JWT"}')
+    head=enc(b'{"alg":"HS512","typ":"JWT"}')  # 업비트 공식 문서 권장 서명 알고리즘
     body=enc(json.dumps({'access_key':os.environ['UPBIT_ACCESS_KEY'],'nonce':str(uuid.uuid4())}).encode())
     message=head+b'.'+body
-    return (message+b'.'+enc(hmac.new(os.environ['UPBIT_SECRET_KEY'].encode(),message,hashlib.sha256).digest())).decode()
+    return (message+b'.'+enc(hmac.new(os.environ['UPBIT_SECRET_KEY'].encode(),message,hashlib.sha512).digest())).decode()
 
 def run(stop):
     from websockets.sync.client import connect as websocket
